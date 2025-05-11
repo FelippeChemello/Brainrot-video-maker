@@ -1,0 +1,108 @@
+import {
+  AbsoluteFill,
+  Audio,
+  Img,
+  OffthreadVideo,
+  Sequence,
+  staticFile,
+  useVideoConfig,
+} from "remotion";
+import { z } from "zod";
+import { loadFont } from "@remotion/google-fonts/TitanOne";
+
+import { Speaker, videoSchema } from "../config/types";
+import FelippeImg from "../../public/assets/felippe.png";
+import CodyImg from "../../public/assets/cody.png";
+import parseSentences from "./text-parser";
+import Text from "./Text";
+
+const { fontFamily } = loadFont();
+
+export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ script, backgroundColor, backgroundVideoSrc }) => {
+  const { fps } = useVideoConfig()
+
+  return (
+    <AbsoluteFill style={{ backgroundColor, fontFamily }}>
+      {backgroundVideoSrc && (
+        <OffthreadVideo src={staticFile(backgroundVideoSrc)} muted />
+      )}
+
+      {script.map((segment, index) => {
+        const { duration, alignment, speaker } = segment;
+        const start = script.slice(0, index).reduce((acc, currentItem) => {
+          return acc + (currentItem.duration || 0);
+        }, 0);
+
+        const sentences = parseSentences(alignment)
+
+        return (
+          <Sequence key={index} from={Math.floor(start * fps)} durationInFrames={Math.ceil(duration * fps)}>
+            <Audio src={staticFile(segment.audioFileName)} />
+
+            {speaker === Speaker.Felippe && (
+              <AbsoluteFill>
+                <Img src={FelippeImg} className="absolute bottom-0 right-0 max-w-[30%]" />
+
+                {sentences.map((sentence, i) => {
+                  return (
+                    <Sequence
+                      key={`${index}-${i}`}
+                      from={Math.ceil(sentence.start * fps)}
+                      durationInFrames={Math.ceil((sentence.end - sentence.start) * fps)}
+                    >
+                      <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !bottom-0 !left-0 top-[unset] right-[unset] p-16">
+                        <Text>
+                          {sentence.text}
+                        </Text>
+                      </AbsoluteFill>
+                    </Sequence>
+                  );
+                })}
+
+                {segment.imageSrc && (
+                  <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !top-0 !left-[0] p-8">
+                    <Img
+                      src={segment.imageSrc}
+                      className="w-full h-full object-contain"
+                    />
+                  </AbsoluteFill>
+                )}
+              </AbsoluteFill>
+            )}
+
+            {speaker === Speaker.Cody && (
+              <AbsoluteFill>
+                <Img src={CodyImg} className="absolute top-0 left-0 max-w-[40%]" /> 
+
+                {sentences.map((sentence, i) => {
+                  return (
+                    <Sequence
+                      key={`${index}-${i}`}
+                      from={Math.ceil(sentence.start * fps)}
+                      durationInFrames={Math.ceil((sentence.end - sentence.start) * fps)}
+                    >
+                      <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !bottom-0 !right-0 top-[unset] left-[unset] p-16">
+                        <Text>
+                          {sentence.text}
+                        </Text>
+                      </AbsoluteFill>
+                    </Sequence>
+                  )
+                })}
+
+                {segment.imageSrc && (
+                  <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !top-0 !right-0 !left-[unset] p-4">
+                    <Img
+                      src={segment.imageSrc}
+                      className="w-full h-full object-contain"
+                    />
+                  </AbsoluteFill>
+                )}
+              </AbsoluteFill>
+            )}
+          </Sequence>
+        );
+      })}
+    </AbsoluteFill>
+  );
+};
