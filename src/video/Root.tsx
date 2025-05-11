@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { Landscape } from "./Landscape";
 import { videoSchema } from "../config/types";
+import { Portrait } from "./Portrait";
 
 const FPS = 30;
 
@@ -61,7 +62,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="Portrait"
-        component={Landscape}
+        component={Portrait}
         durationInFrames={1}
         fps={FPS}
         width={1080}
@@ -71,6 +72,9 @@ export const RemotionRoot: React.FC = () => {
           script: [],
           background: {
             color: "oklch(70.8% 0 0)",
+            video: {
+              src: "assets/parkour.mp4",
+            }
           }
         }}
         calculateMetadata={async ({ props }) => {
