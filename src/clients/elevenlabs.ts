@@ -22,7 +22,7 @@ const voices: { [key in keyof typeof Speaker]: string } = {
 }
 
 export class ElevenLabsTTSClient implements TTSClient {
-    public async synthesize(voice: Speaker, text: string, id?: string | number): Promise<{ audioFileName: string, duration: number }> {
+    public async synthesize(voice: Speaker, text: string, id: string | number = v4()): Promise<{ audioFileName: string, duration: number }> {
         console.log(`[ELEVENLABS]: Synthesizing audio for text: ${text}`);
 
         const { audioFileName, audioFilePath } = await new Promise<{ audioFileName: string, audioFilePath: string }>(

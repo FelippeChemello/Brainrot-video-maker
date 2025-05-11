@@ -5,11 +5,12 @@ import terminalImage from 'terminal-image';
 import { ImageGeneratorClient } from './interfaces/ImageGenerator';
 import { ENV } from '../config/env';
 import { publicDir } from '../config/path';
+import { v4 } from 'uuid';
 
 const genAI = new GoogleGenAI({ apiKey: ENV.GEMINI_API_KEY })
 
 export class GeminiClient implements ImageGeneratorClient {
-    async generate(prompt: string, id?: string | number) {
+    async generate(prompt: string, id: string | number = v4()) {
         try {
             console.log(`[GEMINI] Generating image with prompt: ${prompt}`);
 
@@ -20,8 +21,6 @@ export class GeminiClient implements ImageGeneratorClient {
             })
 
             const parts = imageResult.candidates![0].content?.parts!
-            fs.writeFileSync(`${publicDir}/response.json`, JSON.stringify(imageResult, null, 2))
-
             for (const part of parts) {
                 if (part.text) {
                     console.log(`[GEMINI] Text response: ${part.text}`);
@@ -40,13 +39,12 @@ export class GeminiClient implements ImageGeneratorClient {
                     const imageBuffer = Buffer.from(base64Data, 'base64')
                     console.log(await terminalImage.buffer(imageBuffer))
 
-                    if (id !== undefined) {
-                        const filePath = `${publicDir}/image-${id}.png`
-                        fs.writeFileSync(filePath, imageBuffer)
-                        console.log(`[GEMINI] Image saved to ${filePath}`);
-                    }
-
-                    return { imageSrc: `data:${mimeType};base64,${base64Data}` }
+                    const filename = `image-${id}.png`
+                    const filePath = `${publicDir}/${filename}`
+                    fs.writeFileSync(filePath, imageBuffer)
+                    console.log(`[GEMINI] Image saved to ${filePath}`);
+                    
+                    return { imageSrc: filename }
                 }
             }
 

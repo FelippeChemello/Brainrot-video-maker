@@ -60,7 +60,7 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ script, backg
                 {segment.imageSrc && (
                   <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !top-0 !left-[0] p-8">
                     <Img
-                      src={segment.imageSrc}
+                      src={staticFile(segment.imageSrc)}
                       className="w-full h-full object-contain"
                     />
                   </AbsoluteFill>
@@ -89,7 +89,7 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ script, backg
                 {segment.imageSrc && (
                   <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !top-0 !right-0 !left-[unset] p-4">
                     <Img
-                      src={segment.imageSrc}
+                      src={staticFile(segment.imageSrc)}
                       className="w-full h-full object-contain"
                     />
                   </AbsoluteFill>

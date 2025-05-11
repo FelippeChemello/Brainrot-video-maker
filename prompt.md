@@ -7,7 +7,7 @@ The output must be a JSON array with the following structure
 type Script = Array<{
     speaker: 'Felippe' | 'Cody'; 
     text: string; // Use <bold> tag to make some words highlighted, the text should be in Portuguese language
-    image_description?: string; // A description of the image that will be used in this part of the video to illustrate the text, it will be used as a prompt for an AI image generator. The image should not contain any person, must be only illustrative and related to the text (optional, but recommended, in English language)
+    image_description?: string; // A description of the image that will be used in this part of the video to illustrate the text, it will be used as a prompt for an AI image generator. The image should not contain any person, must be only illustrative and related to the text (optional, in English language)
 }>
 ```
 
