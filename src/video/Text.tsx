@@ -1,21 +1,30 @@
 import React, { useRef, useState, useLayoutEffect, useCallback } from 'react';
+import { useCurrentFrame, useVideoConfig } from 'remotion';
 
 interface TextProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
   maxFontSize?: number;
   minFontSize?: number;
+  alignedWords: Array<{ start: number; end: number; text: string }>;
+  color?: string;
+  highlightColor?: string;
 }
 
 const Text: React.FC<TextProps> = ({
-  children,
+  alignedWords,
   className,
-  maxFontSize = 200,
+  maxFontSize = 240,
   minFontSize = 10,
+  color = '#000',
+  highlightColor = 'red',
   ...props
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
+
   const [fontSize, setFontSize] = useState(maxFontSize);
+
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
 
   const adjustFontSize = useCallback(() => {
     const container = containerRef.current;
@@ -40,7 +49,7 @@ const Text: React.FC<TextProps> = ({
 
   useLayoutEffect(() => {
     adjustFontSize();
-  }, [children, adjustFontSize]);
+  }, [alignedWords, adjustFontSize]);
 
   return (
     <div
@@ -54,6 +63,7 @@ const Text: React.FC<TextProps> = ({
           fontSize: `${fontSize}px`,
           lineHeight: '1',
           whiteSpace: 'wrap',
+          color,
           textShadow: `
             -4px -4px 0 #fff,  
             4px -4px 0 #fff,   
@@ -67,7 +77,19 @@ const Text: React.FC<TextProps> = ({
         }}
         className="text-center"
       >
-        {children}
+        {alignedWords.map((word, index) => (
+          <span
+            key={index}
+            style={{
+              display: 'inline-block',
+              color: frame >= Math.floor(word.start * fps) && frame <= Math.floor(word.end * fps) ? highlightColor : color,
+            }}
+            dangerouslySetInnerHTML={{
+              __html: `${word.text} &nbsp;`,
+            }}
+          >
+          </span>
+        ))}
       </span>
     </div>
   );

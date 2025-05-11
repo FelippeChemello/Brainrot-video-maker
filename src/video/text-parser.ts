@@ -32,13 +32,18 @@ export default function parseSentences(textArray: TextArray) {
         }
 
         const wordCount = sentenceNode.raw.split(' ').filter(Boolean).length;
-        const words = textArray.slice(wordIndex, wordIndex + wordCount);
+        const wordsSlice = textArray.slice(wordIndex, wordIndex + wordCount);
 
         sentence.text += sentenceNode.raw;
-        sentence.words.push(...words);
+        sentence.start = wordsSlice.at(0)!.start;
+        sentence.end = wordsSlice.at(-1)!.end;
 
-        sentence.start = words.at(0)!.start;
-        sentence.end = words.at(-1)!.end;
+        const sentenceStartTime = sentence.start;
+        sentence.words.push(...wordsSlice.map(word => ({
+            ...word,
+            start: word.start - sentenceStartTime,
+            end: word.end - sentenceStartTime,
+        })));
 
         wordIndex += wordCount;
 

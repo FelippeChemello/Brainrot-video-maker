@@ -51,9 +51,7 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ script, backg
                       durationInFrames={Math.ceil((sentence.end - sentence.start) * fps)}
                     >
                       <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !bottom-0 !left-0 top-[unset] right-[unset] p-16">
-                        <Text>
-                          {sentence.text}
-                        </Text>
+                        <Text alignedWords={sentence.words} highlightColor="oklch(68.5% 0.169 237.323)" />
                       </AbsoluteFill>
                     </Sequence>
                   );
@@ -82,9 +80,7 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ script, backg
                       durationInFrames={Math.ceil((sentence.end - sentence.start) * fps)}
                     >
                       <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !bottom-0 !right-0 top-[unset] left-[unset] p-16">
-                        <Text>
-                          {sentence.text}
-                        </Text>
+                        <Text alignedWords={sentence.words} highlightColor="oklch(76.9% 0.188 70.08)"/>
                       </AbsoluteFill>
                     </Sequence>
                   )
