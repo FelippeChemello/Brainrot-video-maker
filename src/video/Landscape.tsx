@@ -18,13 +18,13 @@ import Text from "./Text";
 
 const { fontFamily } = loadFont();
 
-export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ script, backgroundColor, backgroundVideoSrc }) => {
+export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ script, background }) => {
   const { fps } = useVideoConfig()
 
   return (
-    <AbsoluteFill style={{ backgroundColor, fontFamily }}>
-      {backgroundVideoSrc && (
-        <OffthreadVideo src={staticFile(backgroundVideoSrc)} muted />
+    <AbsoluteFill style={{ backgroundColor: background.color, fontFamily }}>
+      {background.video && (
+        <OffthreadVideo src={staticFile(background.video.src)} muted startFrom={(background.video.initTime || 0) * fps} />
       )}
 
       {script.map((segment, index) => {

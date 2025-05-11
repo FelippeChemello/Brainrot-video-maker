@@ -23,8 +23,13 @@ export type Script = Array<{
 }>;
 
 export const videoSchema = z.object({
-  backgroundColor: zColor(),
-  backgroundVideoSrc: z.string().optional(),
+  background: z.object({
+    color: zColor(),
+    video: z.object({
+      src: z.string(),
+      initTime: z.number().optional(),
+    }).optional()
+  }),
   script: z.array(z.object({
     text: z.string(),
     speaker: z.nativeEnum(Speaker),

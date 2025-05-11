@@ -1,6 +1,6 @@
 import "./index.css";
 
-import { Composition, staticFile } from "remotion";
+import { Composition, random, staticFile } from "remotion";
 import { z } from "zod";
 
 import { Landscape } from "./Landscape";
@@ -21,8 +21,12 @@ export const RemotionRoot: React.FC = () => {
         schema={videoSchema}
         defaultProps={{
           script: [],
-          backgroundColor: "#FFFFFF",
-          backgroundVideoSrc: "assets/parkour.mp4",
+          background: {
+            color: "oklch(70.8% 0 0)",
+            video: {
+              src: "assets/parkour.mp4",
+            }
+          }
         }}
         calculateMetadata={async ({ props }) => {
           const script = await fetch(staticFile("script.json")).then((res) => res.json()) as z.infer<typeof videoSchema>["script"];
@@ -30,6 +34,21 @@ export const RemotionRoot: React.FC = () => {
           const duration = script.reduce((acc, item) => {
             return acc + item.duration!
           }, 0);
+
+          if (props.background.video && !props.background.video.initTime) {
+            const video = await fetch(staticFile(props.background.video.src)).then((res) => res.blob());
+            const videoDuration = await new Promise<number>((resolve) => {
+              const videoElement = document.createElement("video");
+              videoElement.src = URL.createObjectURL(video);
+              videoElement.onloadedmetadata = () => {
+                resolve(videoElement.duration);
+              };
+            });
+
+            const videoNeedsToBeginAtMax = Math.max(0, videoDuration - duration);
+            const randomOffset = random(script[0].text) * videoNeedsToBeginAtMax;
+            props.background.video.initTime = randomOffset;
+          }
 
           return {
             durationInFrames: Math.ceil(duration * FPS),
@@ -50,7 +69,24 @@ export const RemotionRoot: React.FC = () => {
         schema={videoSchema}
         defaultProps={{
           script: [],
-          backgroundColor: "#FFFFFF",
+          background: {
+            color: "oklch(70.8% 0 0)",
+          }
+        }}
+        calculateMetadata={async ({ props }) => {
+          const script = await fetch(staticFile("script.json")).then((res) => res.json()) as z.infer<typeof videoSchema>["script"];
+
+          const duration = script.reduce((acc, item) => {
+            return acc + item.duration!
+          }, 0);
+
+          return {
+            durationInFrames: Math.ceil(duration * FPS),
+            props: {
+              ...props,
+              script: script,
+            }
+          };
         }}
       />
     </>
