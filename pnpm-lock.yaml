@@ -29,6 +29,9 @@ importers:
       get-audio-duration:
         specifier: ^4.0.1
         version: 4.0.1
+      matter-js:
+        specifier: ^0.20.0
+        version: 0.20.0
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -57,6 +60,9 @@ importers:
       '@remotion/eslint-config-flat':
         specifier: ^4.0.300
         version: 4.0.300(eslint@9.26.0(jiti@2.4.2))(typescript@5.8.3)
+      '@types/matter-js':
+        specifier: ^0.19.8
+        version: 0.19.8
       '@types/node':
         specifier: ^22.15.17
         version: 22.15.17
@@ -1278,6 +1284,9 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
+  '@types/matter-js@0.19.8':
+    resolution: {integrity: sha512-W2ZWG58Lijv/4v768NgpeyFqqiOyslmAU7qqM1Lhz4XBoUgGtZtPz4CjcOKYtqHIak14dvPldslQhltqLTWwsw==}
+
   '@types/node@16.9.1':
     resolution: {integrity: sha512-QpLcX9ZSsq3YYUUnD3nFDY8H7wctAhQj/TFKL8Ya8v5fMm3CFXxo8zStsLAl780ltoYoo1WvKUVGBQK+1ifr7g==}
 
@@ -2362,6 +2371,9 @@ packages:
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
+
+  matter-js@0.20.0:
+    resolution: {integrity: sha512-iC9fYR7zVT3HppNnsFsp9XOoQdQN2tUyfaKg4CHLH8bN+j6GT4Gw7IH2rP0tflAebrHFw730RR3DkVSZRX8hwA==}
 
   media-typer@1.1.0:
     resolution: {integrity: sha512-aisnrDP4GNe06UcKFnV5bfMNPBUw4jsLGaWwWfnH3v02GnBuXX2MCVn5RbrWo0j3pczUilYblq7fQ7Nw2t5XKw==}
@@ -4623,6 +4635,8 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
+  '@types/matter-js@0.19.8': {}
+
   '@types/node@16.9.1': {}
 
   '@types/node@22.15.17':
@@ -5852,6 +5866,8 @@ snapshots:
       yallist: 4.0.0
 
   math-intrinsics@1.1.0: {}
+
+  matter-js@0.20.0: {}
 
   media-typer@1.1.0: {}
 

@@ -15,6 +15,7 @@ import FelippeImg from "../../public/assets/felippe.png";
 import CodyImg from "../../public/assets/cody.png";
 import parseSentences from "./text-parser";
 import Text from "./Text";
+import { FallingBalls } from "./FallingBalls";
 
 const { fontFamily } = loadFont();
 
@@ -23,12 +24,19 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ script, backgr
 
   return (
     <AbsoluteFill style={{ backgroundColor: background.color, fontFamily }}>
-      {background.video && (
+      {background.video ? (
         <OffthreadVideo 
           src={staticFile(background.video.src)} 
           muted 
           startFrom={(background.video.initTime || 0) * fps} 
           className="absolute top-0 left-0 w-full h-full object-cover"
+        />
+      ) : (
+        <FallingBalls
+          backgroundColor={background.color}
+          ballColor={background.mainColor}
+          obstacleColor={background.secondaryColor}
+          seed={background.seed || ''}
         />
       )}
 

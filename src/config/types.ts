@@ -24,11 +24,14 @@ export type Script = Array<{
 
 export const videoSchema = z.object({
   background: z.object({
-    color: zColor(),
     video: z.object({
       src: z.string(),
       initTime: z.number().optional(),
-    }).optional()
+    }).optional(),
+    color: zColor(),
+    mainColor: zColor(),
+    secondaryColor: zColor(),
+    seed: z.union([z.string(), z.number()]),
   }),
   script: z.array(z.object({
     text: z.string(),

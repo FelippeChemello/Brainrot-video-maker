@@ -87,4 +87,4 @@ Here is an example of how the script should look like:
 ```
 
 This is just an example, you should create a new script based on the topic provided, with your own content and structure. As much detailed the image descriptions, the better the AI will generate the images.
-Remember to only use the "image_description" field when it is relevant to the text, and to not include any person in the images.
+Remember that "image_description" is optional and should only be presented in the segment when it is relevant to the text, and to not include any person in the images.
