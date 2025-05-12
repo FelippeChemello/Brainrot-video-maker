@@ -54,7 +54,7 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ script, backgr
 
             {speaker === Speaker.Felippe && (
               <AbsoluteFill>
-                <Img src={FelippeImg} className="absolute bottom-0 right-0 max-w-[50%] z-10" />
+                <Img src={FelippeImg} className="absolute bottom-0 right-0 max-w-[50%]" />
 
                 {sentences.map((sentence, i) => {
                   return (
@@ -63,7 +63,7 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ script, backgr
                       from={Math.floor(sentence.start * fps)}
                       durationInFrames={Math.floor((sentence.end - sentence.start) * fps)}
                     >
-                      <AbsoluteFill className="absolute max-w-full max-h-1/3 bottom-[unset] right-[unset] top-0 left-[unset] p-16">
+                      <AbsoluteFill className="absolute max-w-full max-h-1/3 bottom-[unset] right-[unset] top-1/3 left-[unset] p-16">
                         <Text alignedWords={sentence.words} highlightColor="oklch(68.5% 0.169 237.323)" />
                       </AbsoluteFill>
                     </Sequence>
@@ -71,7 +71,7 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ script, backgr
                 })}
 
                 {segment.imageSrc && (
-                  <AbsoluteFill className="absolute max-w-full max-h-1/3 !top-1/3 !right-[unset] !left-[unset] p-4">
+                  <AbsoluteFill className="absolute max-w-full max-h-1/3 !top-0 !right-[unset] !left-[unset] p-4">
                     <Img
                       src={staticFile(segment.imageSrc)}
                       className="w-full h-full object-contain"
@@ -83,7 +83,7 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ script, backgr
 
             {speaker === Speaker.Cody && (
               <AbsoluteFill>
-                <Img src={CodyImg} className="absolute bottom-0 left-0 max-w-[50%] z-10" /> 
+                <Img src={CodyImg} className="absolute bottom-0 left-0 max-w-[50%]" /> 
 
                 {sentences.map((sentence, i) => {
                   return (
@@ -92,7 +92,7 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ script, backgr
                       from={Math.floor(sentence.start * fps)}
                       durationInFrames={Math.floor((sentence.end - sentence.start) * fps)}
                     >
-                      <AbsoluteFill className="absolute max-w-full max-h-1/3 bottom-[unset] right-[unset] top-0 left-[unset] p-16">
+                      <AbsoluteFill className="absolute max-w-full max-h-1/3 bottom-[unset] right-[unset] top-1/3 left-[unset] p-16">
                         <Text alignedWords={sentence.words} highlightColor="oklch(76.9% 0.188 70.08)"/>
                       </AbsoluteFill>
                     </Sequence>
@@ -100,7 +100,7 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ script, backgr
                 })}
 
                 {segment.imageSrc && (
-                  <AbsoluteFill className="absolute max-w-full max-h-1/3 !top-1/3 !right-[unset] !left-[unset] p-4">
+                  <AbsoluteFill className="absolute max-w-full max-h-1/3 !top-0 !right-[unset] !left-[unset] p-4">
                     <Img
                       src={staticFile(segment.imageSrc)}
                       className="w-full h-full object-contain"
