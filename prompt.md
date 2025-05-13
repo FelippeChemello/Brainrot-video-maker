@@ -1,4 +1,4 @@
-Your task is to create a script for a video about "HOW DOES YOUTUBE HANDLE STREAMING OF BILLIONS OF VIDEOS DAILY?" 
+Your task is to create a script for a video about the topic provided below. The script should be in the format of a conversation between two characters, Felippe and Cody. Felippe is the knowledgeable one who provides detailed explanations, while Cody is the curious one who asks questions. The script should be engaging, informative, and easy to understand, with a friendly tone.
 
 The script should be provided as a conversation between two person named Felippe (The smart one, who answers the questions) and Cody (The curious one, who makes questions)
 
@@ -88,3 +88,8 @@ Here is an example of how the script should look like:
 
 This is just an example, you should create a new script based on the topic provided, with your own content and structure. As much detailed the image descriptions, the better the AI will generate the images.
 Remember that "image_description" is optional and should only be presented in the segment when it is relevant to the text, and to not include any person in the images.
+The final video should be at least 8 minutes and not longer than 10 minutes.
+
+<topic>
+
+</topic>

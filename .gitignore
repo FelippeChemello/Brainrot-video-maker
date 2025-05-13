@@ -4,3 +4,4 @@ public/*
 !public/assets
 node_modules
 out
+.env
