@@ -2,6 +2,7 @@ example.mp4
 script.json
 public/*
 !public/assets
+public/assets/*.mp4
 node_modules
 out
 .env
