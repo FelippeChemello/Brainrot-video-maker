@@ -60,7 +60,8 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@ffprobe-installer/linux-x64"
+      "@ffprobe-installer/linux-x64",
+      "esbuild"
     ]
   }
 }
