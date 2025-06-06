@@ -1,4 +1,4 @@
-/* eslint-disable default-param-last, no-useless-constructor, camelcase, no-async-promise-executor */
+/* eslint-disable no-async-promise-executor */
 
 import { ElevenLabsClient } from 'elevenlabs';
 import { v4 } from 'uuid';
@@ -22,6 +22,10 @@ const voices: { [key in keyof typeof Speaker]: string } = {
 }
 
 export class ElevenLabsTTSClient implements TTSClient {
+    public async synthesizeScript(script: { speaker: Speaker, text: string }[], id: string | number = v4()): Promise<{ audioFileName: string, duration: number }> {
+        throw new Error('Method not implemented.');
+    }
+
     public async synthesize(voice: Speaker, text: string, id: string | number = v4()): Promise<{ audioFileName: string, duration: number }> {
         console.log(`[ELEVENLABS]: Synthesizing audio for text: ${text}`);
 

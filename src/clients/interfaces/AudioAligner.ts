@@ -1,3 +1,5 @@
+import { AudioAlignerDTO, AudioAlignerResponse } from "../../config/types";
+
 export interface AudioAlignerClient {
-    alignAudio(audioFile: string, text: string): Promise<Array<{ start: number, end: number, text: string }>>;
+    alignAudio(input: AudioAlignerDTO): Promise<AudioAlignerResponse>;
 }
