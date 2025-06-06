@@ -1,54 +1,38 @@
-import { split, SentenceSplitterSyntax } from "sentence-splitter";
+type Word = { text: string; start: number; end: number }
+type Sentence = { start: number; end: number; text: string; words: Word[] }
 
-type TextArray = {
-    text: string;
-    start: number;
-    end: number;
-}[];
+export default function parseSentences(tokens: Word[]) {
+  if (!tokens.length) return []
 
-type Sentence = {
-    start: number;
-    end: number;
-    text: string;
-    words: TextArray;
-}
-
-export default function parseSentences(textArray: TextArray) {
-    const combinedText = textArray.map(item => item.text).join(' ');
-
-    const sentencesNode = split(combinedText)
-    
-    const sentences: Sentence[] = [];
-    let wordIndex = 0;
-
-    sentencesNode.forEach(sentenceNode => {
-        if (sentenceNode.type !== SentenceSplitterSyntax.Sentence) return;
-        
-        const sentence: Sentence = {
-            start: 0,
-            end: 0,
-            text: '',
-            words: []
-        }
-
-        const wordCount = sentenceNode.raw.split(' ').filter(Boolean).length;
-        const wordsSlice = textArray.slice(wordIndex, wordIndex + wordCount);
-
-        sentence.text += sentenceNode.raw;
-        sentence.start = wordsSlice.at(0)!.start;
-        sentence.end = wordsSlice.at(-1)!.end;
-
-        const sentenceStartTime = sentence.start;
-        sentence.words.push(...wordsSlice.map(word => ({
-            ...word,
-            start: word.start - sentenceStartTime,
-            end: word.end - sentenceStartTime,
-        })));
-
-        wordIndex += wordCount;
-
-        sentences.push(sentence);
-    });
-
-    return sentences;
+  const offset = tokens[0].start
+  const rel = tokens.map(t => ({ ...t, start: t.start - offset, end: t.end - offset }))
+  const out: Sentence[] = []
+  
+  let cur: Word[] = []
+  for (const w of rel) {
+    cur.push(w)
+    if (/[.!?]$/.test(w.text)) {
+      const s = cur[0].start
+      const e = cur[cur.length - 1].end
+      out.push({
+        start: s,
+        end: e,
+        text: cur.map(t => t.text).join(' '),
+        words: cur.map(t => ({ ...t, start: t.start - s, end: t.end - s })),
+      })
+      cur = []
+    }
+  }
+  
+  if (cur.length) {
+    const s = cur[0].start
+    const e = cur[cur.length - 1].end
+    out.push({
+      start: s,
+      end: e,
+      text: cur.map(t => t.text).join(' '),
+      words: cur.map(t => ({ ...t, start: t.start - s, end: t.end - s })),
+    })
+  }
+  return out
 }

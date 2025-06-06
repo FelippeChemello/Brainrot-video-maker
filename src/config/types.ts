@@ -6,21 +6,98 @@ export enum Speaker {
     Felippe = 'Felippe'
 }
 
+export enum ScriptStatus {
+    NOT_READY = 'Not ready',
+    READY = 'Ready',
+    NOT_STARTED = 'Not started',
+    IN_PROGRESS = 'In progress',
+    DONE = 'Done',
+}
+
+export type NotionMainDatabasePage = {
+  id: string;
+  created_time: string;
+  properties: {
+    Audio: {
+      id: string;
+      type: 'file';
+      files: Array<{url: string, expiry_type: string}>;
+    };
+    Status: {
+      id: string;
+      type: 'status';
+      status: { id: string, name: ScriptStatus, color: string };
+    };
+    Name: {
+      id: string;
+      type: 'title';
+      title: Array<{ text: { content: string } }>;
+    },
+    Composition: {
+      id: string;
+      type: 'multi_select';
+      multi_select: Array<{
+        id: string;
+        name: 'Portrait' | 'Landscape';
+        color: string;
+      }>;
+    }
+  }
+}
+
+export type VideoBackground = {
+    video?: {
+      src: string;
+      initTime?: number;
+    };
+    color?: string;
+    mainColor?: string;
+    secondaryColor?: string;
+    seed?: string | number;
+};
+
+export type ScriptWithTitle = {
+    title: string;
+    segments: Script;
+} & {
+    id?: string;
+    audioMimeType?: string;
+    audioExtension?: string;
+    audioSrc?: string;
+    duration?: number;
+    compositions?: Array<'Portrait' | 'Landscape'>;
+    background?: VideoBackground;
+    alignment?: Array<{
+        start: number;
+        end: number;
+        text: string;
+    }>;
+}
+
 export type Script = Array<{
     text: string;
     speaker: Speaker;
     image_description?: string;
 } & {
-    audioFileName?: string;
-    duration?: number;
-    alignment?: Array<{
+    imageSrc?: string;
+}>
+
+export type AudioAlignerDTO = {
+    audio: {
+        filepath: string;
+        mimeType: string;
+    };
+    text: string;
+}
+
+export type AudioAlignerResponse = {
+    alignment: Array<{
         start: number;
         end: number;
         text: string;
-    }>
-} & {
-    imageSrc?: string;
-}>;
+    }>;
+    duration: number;
+}
 
 export const videoSchema = z.object({
   background: z.object({
@@ -33,16 +110,22 @@ export const videoSchema = z.object({
     secondaryColor: zColor(),
     seed: z.union([z.string(), z.number()]),
   }),
-  script: z.array(z.object({
+  segments: z.array(z.object({
     text: z.string(),
     speaker: z.nativeEnum(Speaker),
-    audioFileName: z.string(),
+    imageSrc: z.string().optional(),
     duration: z.number(),
     alignment: z.array(z.object({
       start: z.number(),
       end: z.number(),
       text: z.string(),
     })),
-    imageSrc: z.string().optional(),
-  }))
+  })),
+  alignment: z.array(z.object({
+    start: z.number(),
+    end: z.number(),
+    text: z.string(),
+  })),
+  duration: z.number(),
+  audioSrc: z.string(),
 });

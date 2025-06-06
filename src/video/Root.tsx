@@ -1,7 +1,6 @@
 import "./index.css";
 
 import { Composition, random, staticFile } from "remotion";
-import { z } from "zod";
 
 import { Landscape } from "./Landscape";
 import { videoSchema } from "../config/types";
@@ -23,7 +22,10 @@ export const RemotionRoot: React.FC = () => {
         height={1080}
         schema={videoSchema}
         defaultProps={{
-          script: [],
+          audioSrc: '',
+          segments: [],
+          alignment: [],
+          duration: 1,
           background: {
             color: "oklch(70.8% 0 0)",
             mainColor: "oklch(68.5% 0.169 237.323)",
@@ -35,12 +37,6 @@ export const RemotionRoot: React.FC = () => {
           }
         }}
         calculateMetadata={async ({ props }) => {
-          const script = await fetch(staticFile("script.json")).then((res) => res.json()) as z.infer<typeof videoSchema>["script"];
-
-          const duration = script.reduce((acc, item) => {
-            return acc + item.duration!
-          }, 0);
-
           if (props.background.video && !props.background.video.initTime) {
             const video = await fetch(staticFile(props.background.video.src)).then((res) => res.blob());
             const videoDuration = await new Promise<number>((resolve) => {
@@ -51,16 +47,32 @@ export const RemotionRoot: React.FC = () => {
               };
             });
 
-            const videoNeedsToBeginAtMax = Math.max(0, videoDuration - duration);
+            const videoNeedsToBeginAtMax = Math.max(0, videoDuration - props.duration);
             const randomOffset = random(props.background.seed) * videoNeedsToBeginAtMax;
             props.background.video.initTime = randomOffset;
           }
 
+          let pos = 0;
+          const segments = props.segments.map((segment) => {
+            const tokens = segment.text.replace(/<\/?[^>]+(>|$)/g, "").trim().split(/\s+/);
+            
+            const duration = props.alignment[pos + tokens.length - 1].end - props.alignment[pos].start;
+            const segmentAlignment = props.alignment.slice(pos, pos + tokens.length);
+
+            pos += tokens.length;
+
+            return {
+              ...segment,
+              duration: duration,
+              alignment: segmentAlignment,
+            }
+          })
+
           return {
-            durationInFrames: Math.ceil(duration * FPS),
+            durationInFrames: Math.ceil(props.duration * FPS),
             props: {
               ...props,
-              script: script,
+              segments
             }
           };
         }}
@@ -74,21 +86,21 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
         schema={videoSchema}
         defaultProps={{
-          script: [],
+          audioSrc: '',
+          segments: [],
+          alignment: [],
+          duration: 1,
           background: {
             color: "oklch(70.8% 0 0)",
             mainColor: "oklch(68.5% 0.169 237.323)",
             secondaryColor: "oklch(29.3% 0.066 243.157)",
             seed: v4(),
+            video: {
+              src: "assets/parkour.mp4",
+            }
           }
         }}
         calculateMetadata={async ({ props }) => {
-          const script = await fetch(staticFile("script.json")).then((res) => res.json()) as z.infer<typeof videoSchema>["script"];
-
-          const duration = script.reduce((acc, item) => {
-            return acc + item.duration!
-          }, 0);
-
           if (props.background.video && !props.background.video.initTime) {
             const video = await fetch(staticFile(props.background.video.src)).then((res) => res.blob());
             const videoDuration = await new Promise<number>((resolve) => {
@@ -99,16 +111,32 @@ export const RemotionRoot: React.FC = () => {
               };
             });
 
-            const videoNeedsToBeginAtMax = Math.max(0, videoDuration - duration);
+            const videoNeedsToBeginAtMax = Math.max(0, videoDuration - props.duration);
             const randomOffset = random(props.background.seed) * videoNeedsToBeginAtMax;
             props.background.video.initTime = randomOffset;
           }
 
+          let pos = 0;
+          const segments = props.segments.map((segment) => {
+            const tokens = segment.text.replace(/<\/?[^>]+(>|$)/g, "").trim().split(/\s+/);
+            
+            const duration = props.alignment[pos + tokens.length - 1].end - props.alignment[pos].start;
+            const segmentAlignment = props.alignment.slice(pos, pos + tokens.length);
+
+            pos += tokens.length;
+
+            return {
+              ...segment,
+              duration: duration,
+              alignment: segmentAlignment,
+            }
+          })
+
           return {
-            durationInFrames: Math.ceil(duration * FPS),
+            durationInFrames: Math.ceil(props.duration * FPS),
             props: {
               ...props,
-              script: script,
+              segments
             }
           };
         }}

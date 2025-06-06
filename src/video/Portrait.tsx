@@ -15,34 +15,28 @@ import FelippeImg from "../../public/assets/felippe.png";
 import CodyImg from "../../public/assets/cody.png";
 import parseSentences from "./text-parser";
 import Text from "./Text";
-import { FallingBalls } from "./FallingBalls";
 
 const { fontFamily } = loadFont();
 
-export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ script, background }) => {
+export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, background, audioSrc }) => {
   const { fps } = useVideoConfig()
 
   return (
     <AbsoluteFill style={{ backgroundColor: background.color, fontFamily }}>
-      {background.video ? (
-        <OffthreadVideo 
+      {background.video && (
+        <OffthreadVideo
           src={staticFile(background.video.src)} 
           muted 
-          startFrom={(background.video.initTime || 0) * fps} 
+          startFrom={(background.video.initTime || 0) * fps}
           className="absolute top-0 left-0 w-full h-full object-cover"
-        />
-      ) : (
-        <FallingBalls
-          backgroundColor={background.color}
-          ballColor={background.mainColor}
-          obstacleColor={background.secondaryColor}
-          seed={background.seed || ''}
         />
       )}
 
-      {script.map((segment, index) => {
+      <Audio src={staticFile(audioSrc)} />
+
+      {segments.map((segment, index) => {
         const { duration, alignment, speaker } = segment;
-        const start = script.slice(0, index).reduce((acc, currentItem) => {
+        const start = segments.slice(0, index).reduce((acc, currentItem) => {
           return acc + (currentItem.duration || 0);
         }, 0);
 
@@ -50,7 +44,6 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ script, backgr
 
         return (
           <Sequence key={index} from={Math.floor(start * fps)} durationInFrames={Math.ceil(duration * fps)}>
-            <Audio src={staticFile(segment.audioFileName)} />
 
             {speaker === Speaker.Felippe && (
               <AbsoluteFill>
