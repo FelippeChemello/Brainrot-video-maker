@@ -61,7 +61,7 @@ Here are some examples of how the script should look like, keep the same structu
         },
         {
             "speaker": "stewie",
-            "text": "Okay, Peter, but even with all the caching in the world, a video still has to come off disc and travel across the network. I should feel some delay.",
+            "text": "Okay, Peter, but even with all the caching in the world, a video still has to come off disc and travel across the network. I should feel some delay."
         },
         {
             "speaker": "peter",
@@ -70,7 +70,7 @@ Here are some examples of how the script should look like, keep the same structu
         },
         {
             "speaker": "stewie",
-            "text": "But how do they know what I want to watch?",
+            "text": "But how do they know what I want to watch?"
         },
         {
             "speaker": "peter",
@@ -79,11 +79,11 @@ Here are some examples of how the script should look like, keep the same structu
         },
         {
             "speaker": "stewie",
-            "text": "So, all that compute just so I can watch brain rot?",
+            "text": "So, all that compute just so I can watch brain rot?"
         },
         {
             "speaker": "peter",
-            "text": "Exactly, Stewie. But it's not just about the videos. It's about the experience. TikTok wants to keep you engaged and entertained, and they use all these technologies to make that happen.",
+            "text": "Exactly, Stewie. But it's not just about the videos. It's about the experience. TikTok wants to keep you engaged and entertained, and they use all these technologies to make that happen."
         }
     ]
 }
@@ -106,7 +106,7 @@ Another example:
         },
         {
             "speaker": "stewie",
-            "text": "All right. What about backend? What's your stack?",
+            "text": "All right. What about backend? What's your stack?"
         },
         {
             "speaker": "peter",
@@ -115,11 +115,11 @@ Another example:
         },
         {
             "speaker": "peter",
-            "text": "It runs on the Erlang VM, same thing WhatsApp uses. Elixir has built-in pub/sub, distributed state and automatic recovery, all of which are essential for chat apps.",
+            "text": "It runs on the Erlang VM, same thing WhatsApp uses. Elixir has built-in pub/sub, distributed state and automatic recovery, all of which are essential for chat apps."
         },
         {
             "speaker": "stewie",
-            "text": "And the database?",
+            "text": "And the database?"
         },
         {
             "speaker": "peter",
@@ -137,11 +137,11 @@ Another example:
         },
         {
             "speaker": "stewie",
-            "text": "Got it. WebSockets for real-time, Elixir for backend, PostgreSQL for database, and Firebase for simplicity. Clean and Scalable.",
+            "text": "Got it. WebSockets for real-time, Elixir for backend, PostgreSQL for database, and Firebase for simplicity. Clean and Scalable."
         },
         {
             "speaker": "peter",
-            "text": "Exactly! Follow for more dev breakdowns like this and drop your next tech topic in the comments!",
+            "text": "Exactly! Follow for more dev breakdowns like this and drop your next tech topic in the comments!"
         }
     ]
 }
@@ -164,7 +164,7 @@ Another example:
         },
         {
             "speaker": "stewie",
-            "text": "A 3D map? Sounds impressive! How exactly does that work?",
+            "text": "A 3D map? Sounds impressive! How exactly does that work?"
         },
         {
             "speaker": "peter",
@@ -173,11 +173,11 @@ Another example:
         },
         {
             "speaker": "peter",
-            "text": "After building this map, it's compared with the stored original using an on-device neural network. If there's a high enough confidence score, your phone unlocks. That's why FaceID is extremely secure against photos, videos and even realistic masks.",
+            "text": "After building this map, it's compared with the stored original using an on-device neural network. If there's a high enough confidence score, your phone unlocks. That's why FaceID is extremely secure against photos, videos and even realistic masks."
         },
         {
             "speaker": "stewie",
-            "text": "Fascinating! But how does it still work so flawlessly in complete darkness?",
+            "text": "Fascinating! But how does it still work so flawlessly in complete darkness?"
         },
         {
             "speaker": "peter",
@@ -185,7 +185,7 @@ Another example:
         },
         {
             "speaker": "stewie",
-            "text": "Incredible! But what if I start growing a beard of change my glasses?",
+            "text": "Incredible! But what if I start growing a beard of change my glasses?"
         },
         {
             "speaker": "peter",
@@ -193,7 +193,7 @@ Another example:
         },
         {
             "speaker": "stewie",
-            "text": "But what if someone hacks into my phone's memory and steals that facial data?",
+            "text": "But what if someone hacks into my phone's memory and steals that facial data?"
         },
         {
             "speaker": "peter",
@@ -202,7 +202,7 @@ Another example:
         },
         {
             "speaker": "stewie",
-            "text": "Thanks, Peter. Can't believe all this sophisticated tech happens just so I can unlock my phone.",
+            "text": "Thanks, Peter. Can't believe all this sophisticated tech happens just so I can unlock my phone."
         },
         {
             "speaker": "peter",
