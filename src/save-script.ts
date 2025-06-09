@@ -8,9 +8,18 @@ import { ScriptManagerClient } from './clients/interfaces/ScriptManager';
 import { NotionClient } from './clients/notion';
 import { ImageGeneratorClient } from './clients/interfaces/ImageGenerator';
 import { GeminiClient } from './clients/gemini';
+import { titleToFileName } from './utils/title-to-filename';
 
 const jsonScript = fs.readFileSync(path.join(rootDir, 'script.json'), 'utf-8')
 const script = JSON.parse(jsonScript) as ScriptWithTitle;
+
+
+fs.writeFileSync(path.join(rootDir, `${titleToFileName(script.title)}.txt`), `
+Read aloud this conversation between Felippe and his dog Cody. Cody has a curious and playful personality with an animated character like voice, while Felippe is knowledgeable and enthusiastic.
+Felippe is known for his vast knowledge, and Cody is a curious dog who is always asking questions about the world, both are Brazilian Portuguese speakers and have a super very fast-paced, energetic, and enthusiastic way of speaking.
+
+${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
+`, 'utf-8');
 
 const scriptManagerClient: ScriptManagerClient = new NotionClient();
 const imageGenerator: ImageGeneratorClient = new GeminiClient();
@@ -53,11 +62,3 @@ for (const segment of script.segments) {
         fs.unlinkSync(imagePath);
     }
 }
-
-console.log(`######################################################`)
-console.log(`Generate TTS Audio manually with the following prompt:`)
-console.log(`######################################################`)
-
-console.log(`Read aloud this conversation between Felippe and his dog Cody. Cody has a curious and playful personality with an animated character like voice, while Felippe is knowledgeable and enthusiastic.`)
-console.log(`Felippe is known for his vast knowledge, and Cody is a curious dog who is always asking questions about the world, both are Brazilian Portuguese speakers and have a super very fast-paced, energetic, and enthusiastic way of speaking.`)
-console.log(script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n'))

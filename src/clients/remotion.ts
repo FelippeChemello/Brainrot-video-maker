@@ -7,6 +7,7 @@ import { ScriptWithTitle } from '../config/types';
 import { VideoRendererClient } from './interfaces/VideoRenderer';
 import { outputDir, videoDir } from '../config/path';
 import { renderMedia, selectComposition } from '@remotion/renderer';
+import { titleToFileName } from '../utils/title-to-filename';
 
 const timeout = 2 * 60 * 1000; // 2 minutes in milliseconds
 const port = 9999; // Port for Remotion server
@@ -28,7 +29,7 @@ export class RemotionClient implements VideoRendererClient {
             port
         })
 
-        const filename = script.title.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+        const filename = titleToFileName(script.title);
         const outputFilename = `${filename}-${compositionName}.mp4`;
         const outputPath = path.join(outputDir, outputFilename);
 
@@ -53,6 +54,7 @@ export class RemotionClient implements VideoRendererClient {
             disallowParallelEncoding: false,
             timeoutInMilliseconds: timeout,
             port,
+            concurrency: '80%',
             onStart: (started) => {
                 renderedFrames.setTotal(started.frameCount);
                 encodedFrames.setTotal(started.frameCount);

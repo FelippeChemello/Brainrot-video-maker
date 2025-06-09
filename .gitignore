@@ -6,3 +6,4 @@ public/assets/*.mp4
 node_modules
 out
 .env
+*.txt
