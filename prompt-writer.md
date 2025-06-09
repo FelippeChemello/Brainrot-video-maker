@@ -19,7 +19,7 @@ It's very important that each part of the script is detailed and informative, wi
 
 You can make many segments of the script with the same speaker, splitting them into smaller parts if necessary, with image descriptions that are relevant to the text to make the video more engaging.
 
-Here is an example of how the script should look like:
+Here are some examples of how the script should look like, keep the same structure, format, voice and tone, but change the content to match the topic provided:
 ```json
 {
     "title": "How does TikTok work?",
@@ -89,7 +89,130 @@ Here is an example of how the script should look like:
 }
 ```
 
-This is just an example, you should create a new script based on the topic provided, with your own content and structure. As much detailed the image descriptions, the better the AI will generate the images.
+Another example:
+```json
+{
+    "title": "How to build a massive chat APP like WhatsApp?",
+    "segments": [
+        {
+            "speaker": "stewie",
+            "text": "Peter, how would you build a massive chat app like WhatsApp? I don't know where to start.",
+            "image_description": "WhatsApp logo"
+        },
+        {
+            "speaker": "peter",
+            "text": "Start with WebSockets. Real time needs a persistent connection and WebSockets let you send and receive messages instantly.",
+            "image_description": "A diagram showing WebSocket connection"
+        },
+        {
+            "speaker": "stewie",
+            "text": "All right. What about backend? What's your stack?",
+        },
+        {
+            "speaker": "peter",
+            "text": "You could go with Go, Rust, or Java, but I will use Elixir with Phoenix Framework.",
+            "image_description": "A logo of Elixir programming language and Phoenix Framework"
+        },
+        {
+            "speaker": "peter",
+            "text": "It runs on the Erlang VM, same thing WhatsApp uses. Elixir has built-in pub/sub, distributed state and automatic recovery, all of which are essential for chat apps.",
+        },
+        {
+            "speaker": "stewie",
+            "text": "And the database?",
+        },
+        {
+            "speaker": "peter",
+            "text": "Start with PostgreSQL. It's fast and simple. Once you have a large user base, switch to something like Google Spanner or Cassandra for high write throughput.",
+            "image_description": "PostgreSQL logo with an arrow pointing to Google Spanner and Cassandra logos"
+        },
+        {
+            "speaker": "stewie",
+            "text": "This all sounds very complex. What if I do not know anything about backend?"
+        },
+        {
+            "speaker": "peter",
+            "text": "Then use Firebase. It gives you WebSockets, auth, and a database all in one. Great for small to medium apps, but you'll need a custom backend if you're going big.",
+            "image_description": "Firebase logo"
+        },
+        {
+            "speaker": "stewie",
+            "text": "Got it. WebSockets for real-time, Elixir for backend, PostgreSQL for database, and Firebase for simplicity. Clean and Scalable.",
+        },
+        {
+            "speaker": "peter",
+            "text": "Exactly! Follow for more dev breakdowns like this and drop your next tech topic in the comments!",
+        }
+    ]
+}
+```
+
+Another example:
+```json
+{
+    "title": "How Apple FaceID works?",
+    "segments": [
+        {
+            "speaker": "stewie",
+            "text": "Peter, how does my iPhone's face ID recognize me after taking just one photo of me?",
+            "image_description": "Apple FaceID logo"
+        },
+        {
+            "speaker": "peter",
+            "text": "Actually, Stewie, it doesn't take a regular photo at all. Instead, it builds a detailed 3D map of your face, making it much more secure than a simple 2D image.",
+            "image_description": "3D map of a face with facial features highlighted"
+        },
+        {
+            "speaker": "stewie",
+            "text": "A 3D map? Sounds impressive! How exactly does that work?",
+        },
+        {
+            "speaker": "peter",
+            "text": "Your iPhone uses something called a TrueDepth camera system. When you look at your phone, it projects about 30000 invisible infrared dots onto your face using a dot projector. An infrared camera then reads how those dots distort around your unique facial shape, creating a precise 3D map.",
+            "image_description": "A diagram showing the TrueDepth camera system with a phone projecting dots onto a face"
+        },
+        {
+            "speaker": "peter",
+            "text": "After building this map, it's compared with the stored original using an on-device neural network. If there's a high enough confidence score, your phone unlocks. That's why FaceID is extremely secure against photos, videos and even realistic masks.",
+        },
+        {
+            "speaker": "stewie",
+            "text": "Fascinating! But how does it still work so flawlessly in complete darkness?",
+        },
+        {
+            "speaker": "peter",
+            "text": "Great question! It uses what's called a food illuminator, an infrared light source that evenly illuminates you face, even in total darkness. This ensures the dot projection and infrared camera can accurately see and map your face regardless of lighting conditions."
+        },
+        {
+            "speaker": "stewie",
+            "text": "Incredible! But what if I start growing a beard of change my glasses?",
+        },
+        {
+            "speaker": "peter",
+            "text": "FaceID continuously learns and adapts. When your face slightly changes, like growing a beard or switching glasses, FaceID updates your stored facial template after successful unlocks. Even if recognition fails temporarily, entering your passcode helps the system update your facial reference data, with your consent, of course."
+        },
+        {
+            "speaker": "stewie",
+            "text": "But what if someone hacks into my phone's memory and steals that facial data?",
+        },
+        {
+            "speaker": "peter",
+            "text": "Apple thought of that too. Your face ID data isn't stored in regular memory. It's safely encrypted and locked away in the Secure Enclave, a separate isolated security chip inside your iPhone. Even Apple itself can't access it, allegedly, making your biometric data extremely secure.",
+            "image_description": "A diagram showing the Secure Enclave chip inside an iPhone"
+        },
+        {
+            "speaker": "stewie",
+            "text": "Thanks, Peter. Can't believe all this sophisticated tech happens just so I can unlock my phone.",
+        },
+        {
+            "speaker": "peter",
+            "text": "Yep. Makes you appreciate your selfies a bit more, doesn't it, Stewie?"
+        }
+    ]
+}
+```
+
+These are just examples, you should create a new script based on the topic provided, with your own content and structure. As much detailed the image descriptions, the better the AI will generate the images.
 
 <attention>
 Remember that "image_description" is optional and should only be presented in the segment when it is relevant to the text and strictly necessary (it costs a lot), and to not include any person in the images.
@@ -99,6 +222,5 @@ The first speaker should always be Cody, starting with a question or a statement
 </attention>
 
 <topic>
-    Servidor vs Serverless: Por que muitas empresas estão migrando para serverless? 
-    Vantagens, desvantagens e casos de uso práticos da computação serverless.
+    
 </topic>
