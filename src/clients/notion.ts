@@ -17,7 +17,8 @@ const MAX_FILE_SIZE_SINGLE_PART = 20 * 1024 * 1024; // 20 MB
 const MAX_FILE_SIZE_PART = 15 * 1024 * 1024; // 15 MB
 
 const client = new Client({
-    auth: ENV.NOTION_TOKEN
+    auth: ENV.NOTION_TOKEN,
+    timeoutMs: 180000, // 2 minutes
 })
 
 export class NotionClient implements ScriptManagerClient {
@@ -333,9 +334,16 @@ export class NotionClient implements ScriptManagerClient {
 
         console.log(`[NOTION] Updating page ${scriptId} with output files`);
 
+        const page = await client.pages.retrieve({ page_id: scriptId }) as unknown as NotionMainDatabasePage;
+        
         await client.pages.update({
             page_id: scriptId,
-            properties: { Output: { files } },
+            properties: { 
+                Output: { 
+                    // @ts-expect-error Type incorrect, but works
+                    files: [...page.properties.Output.files, ...files]
+                } 
+            },
         });
     }
 
@@ -361,12 +369,11 @@ export class NotionClient implements ScriptManagerClient {
                 number_of_parts: parts.length
             });
 
-            console.log(JSON.stringify(fileUpload, null, 2));
-
             const progressBar = new SingleBar({
                 format: `[NOTION] Uploading parts | {bar} | {percentage}% | {value}/{total} | {eta}s`,
                 hideCursor: true,
                 clearOnComplete: false,
+                fps: 2,
             });
 
             progressBar.start(parts.length, 1);
@@ -375,9 +382,7 @@ export class NotionClient implements ScriptManagerClient {
                 const part = parts[i];
                 const partNumber = i + 1;
 
-                console.log(`[NOTION] Uploading part ${partNumber}/${parts.length}: ${part}`);
-
-                const partUpload = await client.fileUploads.send({
+                await client.fileUploads.send({
                     file_upload_id: fileUpload.id,
                     part_number: partNumber.toString(),
                     file: {
@@ -385,25 +390,15 @@ export class NotionClient implements ScriptManagerClient {
                     }
                 });
 
-                console.log(JSON.stringify(partUpload, null, 2));
                 progressBar.update(i + 1)
             }
 
             parts.forEach(part => fs.unlinkSync(part)); 
             progressBar.stop();
 
-            const fu = await client.fileUploads.retrieve({
-                file_upload_id: fileUpload.id,
-            });
-
-            console.log(JSON.stringify(fu, null, 2));
-
-            console.log(`[NOTION] All parts uploaded successfully. Completing file upload for ${fileUpload.id}`);
-
             await client.fileUploads.complete({
                 file_upload_id: fileUpload.id,
             })
-
 
             console.log(`[NOTION] File uploaded: ${fileUpload.id}`);
 

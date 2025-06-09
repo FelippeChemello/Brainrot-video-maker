@@ -57,7 +57,7 @@ for (const script of scripts) {
 
     fs.writeFileSync(path.join(publicDir, 'script.json'), JSON.stringify(script, null, 2));
 
-    const videos = []
+    const videos: string[] = []
     for (const composition of script.compositions) {
         console.log(`Rendering ${composition} for script ${script.title}...`);
         const videoPath = await renderer.renderVideo(script, composition);
@@ -66,8 +66,7 @@ for (const script of scripts) {
         videos.push(videoPath);
     }
 
-    // const videos = ['/home/felippe/Projects/codestack-videos/out/youtube-portrait.mp4', '/home/felippe/Projects/codestack-videos/out/youtube-landscape.mp4']
-    // await scriptManager.saveOutput(script.id, videos)
+    await scriptManager.saveOutput(script.id, videos)
 
     await scriptManager.updateScriptStatus(script.id, ScriptStatus.DONE);
 

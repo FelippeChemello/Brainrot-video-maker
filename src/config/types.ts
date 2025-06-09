@@ -41,7 +41,12 @@ export type NotionMainDatabasePage = {
         name: 'Portrait' | 'Landscape';
         color: string;
       }>;
-    }
+    },
+    Output: {
+      id: string;
+      type: 'files';
+      files: Array<{ name: string, type: 'file' | 'file_upload' | 'external', file: { url: string, expiry_type: string }}>;
+    };
   }
 }
 
