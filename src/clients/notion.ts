@@ -1,4 +1,4 @@
-/* eslint-disable @remotion/deterministic-randomness, no-case-declarations */
+/* eslint-disable @remotion/deterministic-randomness, no-case-declarations, @typescript-eslint/no-explicit-any */
 import fs from 'fs'
 import { BlockObjectRequest, Client } from "@notionhq/client";
 import { v4 } from 'uuid';
@@ -12,9 +12,11 @@ import { ScriptManagerClient } from './interfaces/ScriptManager';
 import { getMimetypeFromFilename } from '../utils/get-mimetype-from-filename';
 import console from 'console';
 import path from 'path';
+import { sleep } from '../utils/sleep';
 
 const MAX_FILE_SIZE_SINGLE_PART = 20 * 1024 * 1024; // 20 MB
-const MAX_FILE_SIZE_PART = 15 * 1024 * 1024; // 15 MB
+const MAX_FILE_SIZE_PART = 10 * 1024 * 1024; // 10 MB
+const MAX_RETRIES_ON_FILE_UPLOAD = 3;
 
 const client = new Client({
     auth: ENV.NOTION_TOKEN,
@@ -382,15 +384,30 @@ export class NotionClient implements ScriptManagerClient {
                 const part = parts[i];
                 const partNumber = i + 1;
 
-                await client.fileUploads.send({
-                    file_upload_id: fileUpload.id,
-                    part_number: partNumber.toString(),
-                    file: {
-                        data: new Blob([await fs.openAsBlob(part)], { type: mimeType }),
-                    }
-                });
+                let retryCount = 0;
+                while (retryCount < MAX_RETRIES_ON_FILE_UPLOAD) {
+                    try {
+                        await client.fileUploads.send({
+                            file_upload_id: fileUpload.id,
+                            part_number: partNumber.toString(),
+                            file: {
+                                data: new Blob([await fs.openAsBlob(part)], { type: mimeType }),
+                            }
+                        })
 
-                progressBar.update(i + 1)
+                        progressBar.update(i + 1);
+                        break;
+                    } catch (error: any) {
+                        if (retryCount < MAX_RETRIES_ON_FILE_UPLOAD) {
+                            retryCount++;
+
+                            const waitTime = Math.pow(2, retryCount) * 1000;
+                            await sleep(waitTime);
+                        } else {
+                            throw new Error(`[NOTION] Failed to upload part ${partNumber} after ${MAX_RETRIES_ON_FILE_UPLOAD} retries: ${error.message}`);
+                        }
+                    }
+                }
             }
 
             parts.forEach(part => fs.unlinkSync(part)); 
