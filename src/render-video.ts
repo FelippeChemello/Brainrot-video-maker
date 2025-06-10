@@ -73,7 +73,7 @@ for (const script of scripts) {
         videos.push(videoPath);
 
         const videoDuration = await getVideoDurationInSeconds(videoPath);
-        if (composition === 'Portrait' && videoDuration <= MAX_DURATION_FOR_SHORT_CONVERSION) {
+        if (composition === 'Portrait' && videoDuration <= MAX_DURATION_FOR_SHORT_CONVERSION && videoDuration > MAX_DURATION_OF_SHORT_VIDEO) {
             const speedFactor = Math.ceil((videoDuration / MAX_DURATION_OF_SHORT_VIDEO) * 100) / 100;
 
             console.log(`Speeding up video by a factor of ${speedFactor} to convert to short format`);
