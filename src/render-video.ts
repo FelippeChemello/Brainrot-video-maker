@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { getVideoDurationInSeconds } from 'get-video-duration';
 
 import { ScriptStatus } from './config/types';
 import { publicDir } from './config/path';
@@ -9,10 +10,16 @@ import { AudioAlignerClient } from './clients/interfaces/AudioAligner';
 import { AeneasClient } from './clients/aeneas';
 import { VideoRendererClient } from './clients/interfaces/VideoRenderer';
 import { RemotionClient } from './clients/remotion';
+import { MediaEditorClient } from './clients/interfaces/VideoManipulator';
+import { FFmpegClient } from './clients/ffmpeg';
+
+const MAX_DURATION_FOR_SHORT_CONVERSION = 350;
+const MAX_DURATION_OF_SHORT_VIDEO = 170;
 
 const scriptManager: ScriptManagerClient = new NotionClient()
 const audioAligner: AudioAlignerClient = new AeneasClient();
 const renderer: VideoRendererClient = new RemotionClient();
+const editor: MediaEditorClient = new FFmpegClient();
 
 const scripts = await scriptManager.retrieveScript(ScriptStatus.NOT_STARTED);
 
@@ -64,10 +71,21 @@ for (const script of scripts) {
         
         console.log(`Rendered video for composition ${composition} at path: ${videoPath}`);
         videos.push(videoPath);
+
+        const videoDuration = await getVideoDurationInSeconds(videoPath);
+        if (composition === 'Portrait' && videoDuration <= MAX_DURATION_FOR_SHORT_CONVERSION) {
+            const speedFactor = Math.ceil((videoDuration / MAX_DURATION_OF_SHORT_VIDEO) * 100) / 100;
+
+            console.log(`Speeding up video by a factor of ${speedFactor} to convert to short format`);
+            const videoShortPath = await editor.speedUpVideo(videoPath, speedFactor);
+            
+            console.log(`Speeded up video saved at: ${videoShortPath}`);
+            videos.push(videoShortPath);
+        }
     }
 
+    console.log(`Saving output for script ${script.title}...`);
     await scriptManager.saveOutput(script.id, videos)
-
     await scriptManager.updateScriptStatus(script.id, ScriptStatus.DONE);
 
     console.log(`Cleaning up assets for script ${script.title}...`);

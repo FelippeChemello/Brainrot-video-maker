@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev:script": "tsx --env-file .env src/save-script.ts",
-    "dev:video": "systemd-inhibit --what=handle-lid-switch:sleep:idle --mode=block tsx --env-file .env src/render-video.ts",
+    "dev:video": "tsx --env-file .env src/render-video.ts",
+    "dev:short": "tsx --env-file .env src/short-maker.ts",
     "dev:remotion": "remotion preview --props=./public/script.json",
     "render:landscape:transparent": "remotion render --image-format=png --pixel-format=yuva420p --codec=vp8 --props=./public/script.json Landscape out/transparent.webm",
     "render:portrait:transparent": "remotion render --image-format=png --pixel-format=yuva420p --codec=vp8 --props=./public/script.json Portrait out/transparent.webm",
@@ -45,6 +46,7 @@
     "elevenlabs": "^1.59.0",
     "fluent-ffmpeg": "^2.1.3",
     "get-audio-duration": "^4.0.1",
+    "get-video-duration": "^4.1.0",
     "matter-js": "^0.20.0",
     "openai": "^5.0.1",
     "react": "^19.1.0",

@@ -12,6 +12,7 @@ export enum ScriptStatus {
     NOT_STARTED = 'Not started',
     IN_PROGRESS = 'In progress',
     DONE = 'Done',
+    PUBLISHED = 'Published',
 }
 
 export type NotionMainDatabasePage = {
