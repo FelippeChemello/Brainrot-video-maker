@@ -113,7 +113,7 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient {
                     fs.writeFileSync(filePath, imageBuffer)
                     console.log(`[GEMINI] Image saved to ${filePath}`);
                     
-                    return { imageSrc: filename }
+                    return { mediaSrc: filename }
                 }
             }
 
@@ -121,7 +121,7 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient {
         } catch (error) {
             console.log(`[GEMINI] Error generating image: ${error}`);
             
-            return { imageSrc: undefined }
+            return { mediaSrc: undefined }
         }
     }
 }

@@ -38,6 +38,7 @@
     "@remotion/bundler": "^4.0.310",
     "@remotion/cli": "^4.0.306",
     "@remotion/google-fonts": "^4.0.306",
+    "@remotion/media-parser": "^4.0.314",
     "@remotion/renderer": "^4.0.310",
     "@remotion/tailwind-v4": "^4.0.306",
     "@remotion/zod-types": "^4.0.306",

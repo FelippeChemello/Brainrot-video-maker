@@ -85,7 +85,7 @@ export type Script = Array<{
     speaker: Speaker;
     image_description?: string;
 } & {
-    imageSrc?: string;
+    mediaSrc?: string;
 }>
 
 export type AudioAlignerDTO = {
@@ -119,7 +119,7 @@ export const videoSchema = z.object({
   segments: z.array(z.object({
     text: z.string(),
     speaker: z.nativeEnum(Speaker),
-    imageSrc: z.string().optional(),
+    mediaSrc: z.string().optional(),
     duration: z.number(),
     alignment: z.array(z.object({
       start: z.number(),

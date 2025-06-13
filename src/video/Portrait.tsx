@@ -15,6 +15,8 @@ import FelippeImg from "../../public/assets/felippe.png";
 import CodyImg from "../../public/assets/cody.png";
 import parseSentences from "./text-parser";
 import Text from "./Text";
+import { getMimetypeFromFilename } from "../utils/get-mimetype-from-filename";
+import { LoopableOffthreadVideo } from "./LoopableOffthreadVideo";
 
 const { fontFamily } = loadFont();
 
@@ -39,12 +41,14 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, back
         const start = segments.slice(0, index).reduce((acc, currentItem) => {
           return acc + (currentItem.duration || 0);
         }, 0);
+        const mediaType = segment.mediaSrc && getMimetypeFromFilename(segment.mediaSrc).type;
+
+        console.log(`Is media an image for segment ${index}:`, mediaType, segment.mediaSrc);
 
         const sentences = parseSentences(alignment)
 
         return (
           <Sequence key={index} from={Math.floor(start * fps)} durationInFrames={Math.ceil(duration * fps)}>
-
             {speaker === Speaker.Felippe && (
               <AbsoluteFill>
                 <Img src={FelippeImg} className="absolute bottom-0 right-0 max-w-[50%]" />
@@ -62,15 +66,6 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, back
                     </Sequence>
                   );
                 })}
-
-                {segment.imageSrc && (
-                  <AbsoluteFill className="absolute max-w-full max-h-1/3 !top-0 !right-[unset] !left-[unset] p-4">
-                    <Img
-                      src={staticFile(segment.imageSrc)}
-                      className="w-full h-full object-contain"
-                    />
-                  </AbsoluteFill>
-                )}
               </AbsoluteFill>
             )}
 
@@ -91,14 +86,23 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, back
                     </Sequence>
                   )
                 })}
+              </AbsoluteFill>
+            )}
 
-                {segment.imageSrc && (
-                  <AbsoluteFill className="absolute max-w-full max-h-1/3 !top-0 !right-[unset] !left-[unset] p-4">
-                    <Img
-                      src={staticFile(segment.imageSrc)}
-                      className="w-full h-full object-contain"
-                    />
-                  </AbsoluteFill>
+            {segment.mediaSrc && (
+              <AbsoluteFill className="absolute max-w-full max-h-1/3 !top-0 !right-[unset] !left-[unset] p-4">
+                {mediaType === 'image' ? (
+                  <Img
+                    src={staticFile(segment.mediaSrc)}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <LoopableOffthreadVideo
+                    src={staticFile(segment.mediaSrc)}
+                    muted
+                    loop
+                    className="w-full h-full object-contain"
+                  />
                 )}
               </AbsoluteFill>
             )}

@@ -76,10 +76,10 @@ export class NotionClient implements ScriptManagerClient {
             }
 
             let imageId: string | null = null;
-            if (segment.imageSrc) {
-                console.log(`[NOTION] Uploading image: ${segment.imageSrc}`);
+            if (segment.mediaSrc) {
+                console.log(`[NOTION] Uploading image: ${segment.mediaSrc}`);
 
-                imageId = await this.uploadFile(path.join(publicDir, segment.imageSrc));
+                imageId = await this.uploadFile(path.join(publicDir, segment.mediaSrc));
             }
 
             const children: BlockObjectRequest[] = []
@@ -204,25 +204,27 @@ export class NotionClient implements ScriptManagerClient {
                             switch (column.type) {
                                 case 'image':
                                     // @ts-expect-error file is an object
-                                    const imageSrc = column.image.file.url;
-                                    return { imageSrc };
+                                    return { mediaSrc: column.image.file.url };
                                 case 'paragraph':
                                     const text = column.paragraph.rich_text.map((text) => text.type === 'text' ? text.text.content : '').join('\n');
                                     return { text };
+                                case 'video':
+                                    // @ts-expect-error file is an object
+                                    return { mediaSrc: column.video.file.url };
                             }
                         }))
 
                         const columnData = columnChildren.reduce((acc, child) => ({
                             ...acc,
                             ...child,
-                        }), { text: '', imageSrc: '' });
+                        }), { text: '', mediaSrc: '' });
 
                         segments.push({ speaker: lastSpeaker, ...columnData });
                         break;
                 }
             }
 
-            const { extension, mimeType} = getMimetypeFromFilename(audioFileName);
+            const { extension, mimeType } = getMimetypeFromFilename(audioFileName);
             
             scripts.push({ 
                 id: page.id,
@@ -281,18 +283,18 @@ export class NotionClient implements ScriptManagerClient {
         console.log(`[NOTION] Downloading assets for script ${script.title}`);
 
         for (const segment of script.segments) {
-            if (segment.imageSrc) {
-                console.log(`[NOTION] Downloading image: ${segment.imageSrc}`);
+            if (segment.mediaSrc) {
+                console.log(`[NOTION] Downloading image: ${segment.mediaSrc}`);
 
-                const filePath = `${publicDir}/${v4()}.${segment.imageSrc.split('.').pop()?.split('?')[0]}`;
+                const filePath = `${publicDir}/${v4()}.${segment.mediaSrc.split('.').pop()?.split('?')[0]}`;
 
-                const response = await fetch(segment.imageSrc);
+                const response = await fetch(segment.mediaSrc);
                 const buffer = await response.arrayBuffer();
                 fs.writeFileSync(filePath, Buffer.from(buffer));
                 
                 const filename = filePath.split('/').pop()
                 if (filename) {
-                    segment.imageSrc = filename;
+                    segment.mediaSrc = filename;
                 } else {
                     console.error(`[NOTION] Failed to extract filename from path: ${filePath}`);
                 }

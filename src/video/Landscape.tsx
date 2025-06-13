@@ -62,10 +62,10 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ segments, bac
                   );
                 })}
 
-                {segment.imageSrc && (
+                {segment.mediaSrc && (
                   <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !top-0 !left-[0] p-8">
                     <Img
-                      src={staticFile(segment.imageSrc)}
+                      src={staticFile(segment.mediaSrc)}
                       className="w-full h-full object-contain"
                     />
                   </AbsoluteFill>
@@ -91,10 +91,10 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ segments, bac
                   )
                 })}
 
-                {segment.imageSrc && (
+                {segment.mediaSrc && (
                   <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !top-0 !right-0 !left-[unset] p-4">
                     <Img
-                      src={staticFile(segment.imageSrc)}
+                      src={staticFile(segment.mediaSrc)}
                       className="w-full h-full object-contain"
                     />
                   </AbsoluteFill>

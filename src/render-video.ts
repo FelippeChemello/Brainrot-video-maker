@@ -92,8 +92,8 @@ for (const script of scripts) {
 
     fs.unlinkSync(path.join(publicDir, script.audioSrc));
     for (const segment of script.segments) {
-        if (segment.imageSrc) {
-            fs.unlinkSync(path.join(publicDir, segment.imageSrc));
+        if (segment.mediaSrc) {
+            fs.unlinkSync(path.join(publicDir, segment.mediaSrc));
         }
     }
 }

@@ -46,9 +46,9 @@ for (const [index, segment] of script.segments.entries()) {
         }
 
         console.log(`[${index + 1}/${script.segments.length}] Generating image`);
-        const { imageSrc } = await imageGenerator.generate(segment.image_description, index);
+        const { mediaSrc } = await imageGenerator.generate(segment.image_description, index);
         
-        script.segments[index].imageSrc = imageSrc;
+        script.segments[index].mediaSrc = mediaSrc;
         iterationsInMinute++;
     }
 }
@@ -57,8 +57,8 @@ await scriptManagerClient.saveScript(script)
 
 console.log(`Cleaning up assets...`)
 for (const segment of script.segments) {
-    if (segment.imageSrc) {
-        const imagePath = path.join(publicDir, segment.imageSrc);
+    if (segment.mediaSrc) {
+        const imagePath = path.join(publicDir, segment.mediaSrc);
         fs.unlinkSync(imagePath);
     }
 }

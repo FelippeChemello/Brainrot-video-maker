@@ -23,12 +23,15 @@ importers:
       '@remotion/google-fonts':
         specifier: ^4.0.306
         version: 4.0.306(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@remotion/media-parser':
+        specifier: ^4.0.314
+        version: 4.0.314
       '@remotion/renderer':
         specifier: ^4.0.310
         version: 4.0.310(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@remotion/tailwind-v4':
         specifier: ^4.0.306
-        version: 4.0.306(@remotion/bundler@4.0.310(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(typescript@5.8.3)(webpack@5.96.1)
+        version: 4.0.306(@remotion/bundler@4.0.310(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(typescript@5.8.3)(webpack@5.96.1(esbuild@0.25.0))
       '@remotion/zod-types':
         specifier: ^4.0.306
         version: 4.0.306(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(zod@3.25.20)
@@ -1267,6 +1270,9 @@ packages:
 
   '@remotion/media-parser@4.0.310':
     resolution: {integrity: sha512-BkDtq1CeOQAnCvfbhJi3tlDwDy3vqi87UVu3elBlRAqCQhqSpcYrAUcs84awqUZNCAUo0V9+Dr1I+XOz0Vtt4A==}
+
+  '@remotion/media-parser@4.0.314':
+    resolution: {integrity: sha512-JlcowokfSYTLuuJitT0LYJxkaLhrrPiYOY/k4HQbMLBAZcyRMhoeyHEcFgh/hZHSmzp3xZVcSziHwy/a5ONMEg==}
 
   '@remotion/media-utils@4.0.306':
     resolution: {integrity: sha512-BS2plGZOxH7lL7LeubMsfLKZaJ7GqIuq2kE45DDIIYlwEEM9D50Y89MJI5KLYF9KSDXSvRa3Rb65Hp5M/nGkbA==}
@@ -4588,6 +4594,8 @@ snapshots:
 
   '@remotion/media-parser@4.0.310': {}
 
+  '@remotion/media-parser@4.0.314': {}
+
   '@remotion/media-utils@4.0.306(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       react: 19.1.0
@@ -4740,13 +4748,13 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@remotion/tailwind-v4@4.0.306(@remotion/bundler@4.0.310(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(typescript@5.8.3)(webpack@5.96.1)':
+  '@remotion/tailwind-v4@4.0.306(@remotion/bundler@4.0.310(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(typescript@5.8.3)(webpack@5.96.1(esbuild@0.25.0))':
     dependencies:
       '@remotion/bundler': 4.0.310(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tailwindcss/postcss': 4.1.1
       css-loader: 5.2.7(webpack@5.96.1)
       postcss: 8.5.1
-      postcss-loader: 8.1.1(postcss@8.5.1)(typescript@5.8.3)(webpack@5.96.1)
+      postcss-loader: 8.1.1(postcss@8.5.1)(typescript@5.8.3)(webpack@5.96.1(esbuild@0.25.0))
       postcss-preset-env: 10.1.3(postcss@8.5.1)
       style-loader: 4.0.0(webpack@5.96.1)
       tailwindcss: 4.1.1
@@ -6311,7 +6319,7 @@ snapshots:
       '@csstools/utilities': 2.0.0(postcss@8.5.1)
       postcss: 8.5.1
 
-  postcss-loader@8.1.1(postcss@8.5.1)(typescript@5.8.3)(webpack@5.96.1):
+  postcss-loader@8.1.1(postcss@8.5.1)(typescript@5.8.3)(webpack@5.96.1(esbuild@0.25.0)):
     dependencies:
       cosmiconfig: 9.0.0(typescript@5.8.3)
       jiti: 1.21.7
