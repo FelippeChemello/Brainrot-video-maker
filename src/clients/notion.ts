@@ -282,6 +282,23 @@ export class NotionClient implements ScriptManagerClient {
     async downloadAssets(script: ScriptWithTitle): Promise<ScriptWithTitle> {
         console.log(`[NOTION] Downloading assets for script ${script.title}`);
 
+        if (script.audioSrc) {
+            console.log(`[NOTION] Downloading audio: ${script.audioSrc}`);
+
+            const filePath = `${publicDir}/${v4()}.${script.audioSrc.split('.').pop()?.split('?')[0]}`;
+
+            const response = await fetch(script.audioSrc);
+            const buffer = await response.arrayBuffer();
+            fs.writeFileSync(filePath, Buffer.from(buffer));
+
+            const filename = filePath.split('/').pop()
+            if (filename) {
+                script.audioSrc = filename;
+            } else {
+                console.error(`[NOTION] Failed to extract filename from path: ${filePath}`);
+            }
+        }
+
         for (const segment of script.segments) {
             if (segment.mediaSrc) {
                 console.log(`[NOTION] Downloading image: ${segment.mediaSrc}`);
@@ -298,23 +315,6 @@ export class NotionClient implements ScriptManagerClient {
                 } else {
                     console.error(`[NOTION] Failed to extract filename from path: ${filePath}`);
                 }
-            }
-        }
-
-        if (script.audioSrc) {
-            console.log(`[NOTION] Downloading audio: ${script.audioSrc}`);
-
-            const filePath = `${publicDir}/${v4()}.${script.audioSrc.split('.').pop()?.split('?')[0]}`;
-
-            const response = await fetch(script.audioSrc);
-            const buffer = await response.arrayBuffer();
-            fs.writeFileSync(filePath, Buffer.from(buffer));
-
-            const filename = filePath.split('/').pop()
-            if (filename) {
-                script.audioSrc = filename;
-            } else {
-                console.error(`[NOTION] Failed to extract filename from path: ${filePath}`);
             }
         }
 
