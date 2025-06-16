@@ -10,6 +10,7 @@ import { TTSClient } from './interfaces/TTS';
 import { Script, Speaker } from '../config/types';
 import { concatAudioFiles } from '../utils/concat-audio-files';
 import { ImageGeneratorClient } from './interfaces/ImageGenerator';
+import { Agents, LLMClient, Agent } from './interfaces/LLM';
 
 const openai = new OpenAI({
     apiKey: ENV.OPENAI_API_KEY,
@@ -25,7 +26,7 @@ const voicePrompt: { [key in keyof typeof Speaker]: string } = {
     Felippe: 'Brazilian, Bright, energetic, young, neutral accent, sophisticated, with clear articulation. Slightly professorial, speaking with pride and confidence in his vast knowledge, yet always approachable. Clearly articulate Portuguese and technical terms authentically. Very Fast Paced.',
 }
 
-export class OpenAIClient implements TTSClient, ImageGeneratorClient {
+export class OpenAIClient implements TTSClient, ImageGeneratorClient, LLMClient {
     async synthesize(speaker: Speaker, text: string, id?: string | number) {
         console.log(`[OPENAI] Synthesizing speech for speaker: ${speaker}, text length: ${text.length}`);
         
@@ -105,5 +106,21 @@ export class OpenAIClient implements TTSClient, ImageGeneratorClient {
         }
 
         return { mediaSrc }
+    }
+
+    async complete(agent: Agent, prompt: string): Promise<{ text: string }> {
+        console.log(`[OPENAI] Running agent: ${agent}`);
+        
+        const response = await openai.responses.create({
+            model: Agents[agent].model.openai,
+            instructions: Agents[agent].systemPrompt,
+            input: prompt,
+            reasoning: Agents[agent].model.openai === 'o3' ? { effort: 'high' } : undefined,
+        });
+
+        const text = response.output_text
+        const parsedResponse = Agents[agent].responseParser(text);
+
+        return { text: parsedResponse };
     }
 }

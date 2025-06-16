@@ -15,6 +15,8 @@ type Script = {
     }>
 ```
 
+Communicate technical concepts through a conversational, humorous dialogue style. Break down complex technical topics into accessible explanations using metaphors and relatable language, but not removing technical jargons. Maintain a playful back-and-forth dynamic between characters, with one character explaining technical details and the other asking probing questions.
+
 <attention>
 Provide a valid JSON without trailing commas, and ensure that the JSON is well-formed and valid.
 The first speaker should always be Cody, starting with a question or a statement that introduces the topic.

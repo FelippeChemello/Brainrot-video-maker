@@ -9,6 +9,8 @@ const envSchema = z.object({
     AENEAS_API_KEY: z.string(),
     
     OPENAI_API_KEY: z.string(),
+
+    ANTHROPIC_API_KEY: z.string(),
     
     NOTION_TOKEN: z.string(),
     NOTION_DATABASE_ID: z.string(),

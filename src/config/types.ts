@@ -80,6 +80,13 @@ export type ScriptWithTitle = {
     }>;
 }
 
+export type SEO = {
+    title: string;
+    description: string;
+    tags: string[];
+    hashtags: string[];
+}
+
 export type Script = Array<{
     text: string;
     speaker: Speaker;

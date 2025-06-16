@@ -6,3 +6,4 @@ export const rootDir = path.join(__dirname, '..', '..');
 export const publicDir = path.join(rootDir, 'public');
 export const outputDir = path.join(rootDir, 'out');
 export const videoDir = path.join(rootDir, 'src', 'video');
+export const promptsDir = path.join(rootDir, 'prompts');

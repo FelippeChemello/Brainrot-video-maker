@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev:script": "tsx --env-file .env src/save-script.ts",
+    "dev:script": "tsx --env-file .env src/generate-script.ts",
     "dev:video": "tsx --env-file .env src/render-video.ts",
     "dev:short": "tsx --env-file .env src/short-maker.ts",
     "dev:remotion": "remotion preview --props=./public/script.json",
@@ -33,6 +33,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.54.0",
     "@google/genai": "^0.13.0",
     "@notionhq/client": "^3.1.1",
     "@remotion/bundler": "^4.0.310",

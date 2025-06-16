@@ -5,7 +5,7 @@ import { v4 } from 'uuid';
 import splitFile from 'split-file'
 import { SingleBar } from 'cli-progress'
 
-import { NotionMainDatabasePage, ScriptStatus, ScriptWithTitle, Speaker, VideoBackground } from "../config/types";
+import { NotionMainDatabasePage, ScriptStatus, ScriptWithTitle, SEO, Speaker, VideoBackground } from "../config/types";
 import { ENV } from "../config/env";
 import { outputDir, publicDir } from "../config/path";
 import { ScriptManagerClient } from './interfaces/ScriptManager';
@@ -24,7 +24,7 @@ const client = new Client({
 })
 
 export class NotionClient implements ScriptManagerClient {
-    async saveScript(script: ScriptWithTitle): Promise<void> {
+    async saveScript(script: ScriptWithTitle, seo: SEO): Promise<void> {
         console.log(`[NOTION] Saving script ${script.title}`);
 
         let audioFileId: string | null = null;
@@ -55,6 +55,9 @@ export class NotionClient implements ScriptManagerClient {
                         type: 'file_upload',
                         file_upload: { id: audioFileId },
                     }] : [],
+                },
+                Title: {
+                    rich_text: [{ type: 'text', text: { content: `${seo.title}\n\n${seo.description}\n\n${seo.hashtags.join(" ")}` } }],
                 }
             }
         })

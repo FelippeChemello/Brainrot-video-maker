@@ -11,6 +11,7 @@ import { TTSClient } from './interfaces/TTS';
 import { Script, Speaker } from '../config/types';
 import { saveWaveFile } from '../utils/save-wav-file';
 import getAudioDurationInSeconds from 'get-audio-duration';
+import { Agent, Agents, LLMClient } from './interfaces/LLM';
 
 const genAI = new GoogleGenAI({ apiKey: ENV.GEMINI_API_KEY })
 
@@ -19,7 +20,7 @@ const voices: { [key in keyof typeof Speaker]: string } = {
     Felippe: 'Achird',
 }
 
-export class GeminiClient implements ImageGeneratorClient, TTSClient {
+export class GeminiClient implements ImageGeneratorClient, TTSClient, LLMClient {
     async synthesize(_: Speaker, text: string, id?: string | number): Promise<{ audioFileName: string; duration: number; }> {
         throw new Error('Method not implemented.');
     }
@@ -123,5 +124,29 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient {
             
             return { mediaSrc: undefined }
         }
+    }
+
+    async complete(agent: Agent, prompt: string): Promise<{ text: string }> {
+        console.log(`[GEMINI] Running agent: ${agent}`);
+
+        const response = await genAI.models.generateContent({
+            model: Agents[agent].model.gemini,
+            contents: prompt,
+            config: {
+                systemInstruction: Agents[agent].systemPrompt,
+                responseModalities: ['text'],
+                maxOutputTokens: 65536,
+                temperature: 0.7,
+                tools: [{ googleSearch: {} }],
+                thinkingConfig: {
+                    thinkingBudget: 4096,
+                }    
+            }
+        });
+
+        const text = response.text!
+        const parsedResponse = Agents[agent].responseParser(text);
+
+        return { text: parsedResponse };
     }
 }

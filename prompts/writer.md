@@ -20,7 +20,8 @@ It's very important that each part of the script is short and informative, with 
 You can make many segments of the script with the same speaker, splitting them into smaller parts if necessary, with image descriptions that are relevant to the text to make the video more engaging.
 
 Here are some examples of how the script should look like, keep the same structure, format, voice and tone, but change the content to match the topic provided:
-```json
+
+<example id="1">
 {
     "title": "How does TikTok work?",
     "segments": [
@@ -87,10 +88,9 @@ Here are some examples of how the script should look like, keep the same structu
         }
     ]
 }
-```
+</example>
 
-Another example:
-```json
+<example id="2">
 {
     "title": "Como criar um app de mensagens?",
     "segments": [
@@ -155,10 +155,9 @@ Another example:
         }
     ]
 }
-```
+</example>
 
-Another example:
-```json
+<example id="3">
 {
     "title": "How Apple FaceID works?",
     "segments": [
@@ -220,7 +219,7 @@ Another example:
         }
     ]
 }
-```
+</example>
 
 These are just examples, you should create a new script based on the topic provided, with your own content and structure.
 
@@ -230,4 +229,6 @@ The final video should be at around 3 minutes long!
 Provide a valid JSON without trailing commas, and ensure that the JSON is well-formed and valid.
 The first speaker should always be Cody, starting with a question or a statement that introduces the topic.
 Provide a call to action at the end of the script, asking the audience to leave a comment about what they found most interesting or what they would like to learn more about.
+Always search in the web for the latest information about the topic to ensure it's accurate and up-to-date.
+Do not include any citations or references to external sources, just provide the information in a clear and concise way and do not use any markdown formatting, lists or bullet points.
 </attention>

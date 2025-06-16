@@ -7,11 +7,33 @@ import { sleep } from './utils/sleep';
 import { ScriptManagerClient } from './clients/interfaces/ScriptManager';
 import { NotionClient } from './clients/notion';
 import { ImageGeneratorClient } from './clients/interfaces/ImageGenerator';
-import { GeminiClient } from './clients/gemini';
 import { titleToFileName } from './utils/title-to-filename';
+import { Agent, LLMClient } from "./clients/interfaces/LLM";
+import { OpenAIClient } from "./clients/openai";
+import { AnthropicClient } from "./clients/anthropic";
+import { GeminiClient } from "./clients/gemini";
 
-const jsonScript = fs.readFileSync(path.join(rootDir, 'script.json'), 'utf-8')
-const scripts = JSON.parse(jsonScript) as ScriptWithTitle | ScriptWithTitle[];
+const openai: LLMClient = new OpenAIClient();
+const anthropic: LLMClient = new AnthropicClient();
+const gemini: LLMClient = new GeminiClient();
+const scriptManagerClient: ScriptManagerClient = new NotionClient();
+const imageGenerator: ImageGeneratorClient = new GeminiClient();
+
+const topic = process.argv[2]
+if (!topic) {
+    console.error("Please provide a topic as the first argument.");
+    process.exit(1);
+}
+
+console.log(`Starting research on topic: ${topic}`);
+const { text: research } = await gemini.complete(Agent.RESEARCHER, `Tópico: ${topic}`);
+
+console.log("Writing script based on research...");
+const { text: scriptText } = await openai.complete(Agent.SCRIPT_WRITER, `Tópico: ${topic}\n\n Utilize o seguinte contexto para escrever um roteiro de vídeo:\n\n${research}`);
+
+console.log("Reviewing script...");
+const { text: review } = await anthropic.complete(Agent.SCRIPT_REVIEWER, scriptText)
+const scripts = JSON.parse(review) as ScriptWithTitle | ScriptWithTitle[];
 
 for (const script of Array.isArray(scripts) ? scripts : [scripts]) {
     fs.writeFileSync(path.join(rootDir, `${titleToFileName(script.title)}.txt`), `
@@ -20,9 +42,6 @@ Felippe is known for his vast knowledge, and Cody is a curious dog who is always
 
 ${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
     `, 'utf-8');
-
-    const scriptManagerClient: ScriptManagerClient = new NotionClient();
-    const imageGenerator: ImageGeneratorClient = new GeminiClient();
 
     // Add rate limiting to avoid exceeding the FREE TIER limit from Gemini
     // https://ai.google.dev/gemini-api/docs/rate-limits?hl=pt-br#free-tier
@@ -53,7 +72,11 @@ ${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
         }
     }
 
-    await scriptManagerClient.saveScript(script)
+    console.log("Generating SEO content...");
+    const { text: seoText } = await openai.complete(Agent.SEO_WRITER, review)
+    const seo = JSON.parse(seoText);
+
+    await scriptManagerClient.saveScript(script, seo)
 
     console.log(`Cleaning up assets...`)
     for (const segment of script.segments) {
