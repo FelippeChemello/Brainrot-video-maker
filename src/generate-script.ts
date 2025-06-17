@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { publicDir, rootDir } from './config/path';
+import { outputDir, publicDir } from './config/path';
 import { ScriptWithTitle } from './config/types';
 import { sleep } from './utils/sleep';
 import { ScriptManagerClient } from './clients/interfaces/ScriptManager';
@@ -36,7 +36,7 @@ const { text: review } = await anthropic.complete(Agent.SCRIPT_REVIEWER, scriptT
 const scripts = JSON.parse(review) as ScriptWithTitle | ScriptWithTitle[];
 
 for (const script of Array.isArray(scripts) ? scripts : [scripts]) {
-    fs.writeFileSync(path.join(rootDir, `${titleToFileName(script.title)}.txt`), `
+    fs.writeFileSync(path.join(outputDir, `${titleToFileName(script.title)}.txt`), `
 Read aloud this conversation between Felippe and his dog Cody. Cody has a curious and playful personality with an animated character like voice, while Felippe is knowledgeable and enthusiastic.
 Felippe is known for his vast knowledge, and Cody is a curious dog who is always asking questions about the world, both are Brazilian Portuguese speakers and have a super very fast-paced, energetic, and enthusiastic way of speaking.
 
