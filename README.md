@@ -1,78 +1,73 @@
-# Dialogue to Video Generator
+# Brainrot Video Maker
 
-This project generates dynamic videos depicting a conversation. It takes a script with speaker information, audio details, and optional images, and combines it with configurable background video or color schemes to produce a final video output.
+> **Turn AI-generated scripts into shareable videos**
 
-## Features
+Brainrot Video Maker is a Node.js toolkit that orchestrates multiple LLMs, text‑to‑speech and Remotion compositions to create short educational clips.
 
-*   Generates videos from script files.
-*   Supports two speakers in a conversation.
-*   Customizable backgrounds (video or solid color).
-*   Text-to-Speech integration using ElevenLabs.
-*   Image generation based on script content (via Gemini).
-*   Audio alignment for synchronized speech and visuals.
-*   Built with Remotion for programmatic video creation.
+## Table of Contents
 
-## Getting Started
+- [Brainrot Video Maker](#brainrot-video-maker)
+  - [Table of Contents](#table-of-contents)
+  - [Requirements](#requirements)
+  - [Environment variables](#environment-variables)
+  - [Installation](#installation)
+  - [Pre-requisites](#pre-requisites)
+  - [Available scripts](#available-scripts)
+  - [Usage overview](#usage-overview)
+  - [Contributing](#contributing)
 
-### Prerequisites
+## Requirements
 
-*   Node.js and pnpm
-*   Access to ElevenLabs API (for TTS)
-*   Access to Google Gemini API (for image generation)
+- Node.js v20 (see `.nvmrc`)
+- [pnpm](https://pnpm.io/)
+- FFmpeg installed and in your `PATH`
 
-### Installation
+## Environment variables
 
-1.  Clone the repository:
-    ```bash
-    git clone <your-repository-url>
-    cd codestack-videos
-    ```
-2.  Install dependencies:
-    ```bash
-    pnpm install
-    ```
-3.  Set up your environment variables. Create a `.env` file in the root of the project and add your API keys:
-    ```sh
-    ELEVENLABS_API_KEY=your_elevenlabs_api_key
-    GEMINI_API_KEY=your_gemini_api_key
+Create a `.env` file at the project root with the following entries:
 
-    # Check https://github.com/FelippeChemello/modal_aeneas for details on how to set up Aeneas
-    AENEAS_API_KEY=your_aeneas_api_key
-    AENEAS_BASE_URL=your_aeneas_base_url
-    ```
+- `GEMINI_API_KEY`
+- `AENEAS_BASE_URL`
+- `AENEAS_API_KEY`
+- `OPENAI_API_KEY`
+- `ANTHROPIC_API_KEY`
+- `NOTION_TOKEN`
+- `NOTION_DATABASE_ID`
+- `ELEVENLABS_API_KEY`
 
-## Usage
+These variables are validated in [`src/config/env.ts`](src/config/env.ts).
 
-1.  Prepare your script in `script.json` at the root. 
-    ```json
-    [
-        {
-            "speaker": "Felippe",
-            "text": "Hello, how are you?",
-            "image_description": "A friendly person waving"
-        },
-        {
-            "speaker": "Cody",
-            "text": "I'm good, thanks! How about you?",
-            "image_description": "A person smiling"
-        }
-    ]
-    ```
-2.  Run the development script to generate the video:
-    ```bash
-    pnpm dev
-    ```
-3.  To preview the video composition in Remotion:
-    ```bash
-    pnpm remotion-preview
-    ```
-    Then open the link provided in your browser.
-4.  To build the video for production:
-    ```bash
-    pnpm remotion render src/video/index.ts <Portrait|Landscape>
-    ```
+## Installation
+
+```bash
+pnpm install
+```
+
+## Pre-requisites
+
+- Download and place mp4 files in `public/assets/` for background videos. These will be chosen randomly for each video composition.
+- Change the `public/assets/cody.png`and `public/assets/felippe.png` images to your own profile pictures. These are used in the video compositions.
+
+## Available scripts
+
+Run any of the commands below with `pnpm <command>`:
+
+- **`dev:script <topic>`** – generate a video script about the given topic
+- **`dev:video`** – download the script from Notion, align audio and render the compositions
+- **`dev:remotion`** – preview compositions in the browser using Remotion
+
+## Usage overview
+
+1. Run `pnpm dev:script "<topic>"` to generate a script draft and store it in your Notion database.
+2. Execute `pnpm dev:video` to fetch the script, synthesize audio and render the video files.
+3. Use `pnpm dev:remotion` to preview the compositions during development or run one of the render commands to export the final video.
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
-Feel free to suggest features or report bugs.
+Contributions are welcome! If you spot a bug or want to add features:
+
+1. Fork this repository and create a new branch for your changes.
+2. Install dependencies with `pnpm install`.
+3. Commit your work and open a pull request describing what you've done.
+
+Feel free to open issues for questions or ideas.
