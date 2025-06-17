@@ -7,12 +7,7 @@
   "scripts": {
     "dev:script": "tsx --env-file .env src/generate-script.ts",
     "dev:video": "tsx --env-file .env src/render-video.ts",
-    "dev:short": "tsx --env-file .env src/short-maker.ts",
-    "dev:remotion": "remotion preview --props=./public/script.json",
-    "render:landscape:transparent": "remotion render --image-format=png --pixel-format=yuva420p --codec=vp8 --props=./public/script.json Landscape out/transparent.webm",
-    "render:portrait:transparent": "remotion render --image-format=png --pixel-format=yuva420p --codec=vp8 --props=./public/script.json Portrait out/transparent.webm",
-    "render:landscape": "remotion render --props=./public/script.json Landscape out/landscape.mp4",
-    "render:portrait": "remotion render --props=./public/script.json Portrait out/portrait.mp4"
+    "dev:remotion": "remotion preview --props=./public/script.json"
   },
   "keywords": [],
   "author": "",
