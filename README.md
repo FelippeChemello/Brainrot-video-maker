@@ -21,12 +21,15 @@ Brainrot Video Maker is a Node.js toolkit that orchestrates multiple LLMs, textâ
 - Node.js v20 (see `.nvmrc`)
 - [pnpm](https://pnpm.io/)
 - FFmpeg installed and in your `PATH`
+- Modal service running Montreal Forced Aligner (MFA) ([see setup here](https://github.com/FelippeChemello/modal_montreal_forced_aligner)) and Aeneas instance ([see setup here](https://github.com/FelippeChemello/modal_aeneas))
 
 ## Environment variables
 
 Create a `.env` file at the project root with the following entries:
 
 - `GEMINI_API_KEY`
+- `MFA_BASE_URL`
+- `MFA_API_KEY`
 - `AENEAS_BASE_URL`
 - `AENEAS_API_KEY`
 - `OPENAI_API_KEY`
@@ -46,7 +49,7 @@ pnpm install
 ## Pre-requisites
 
 - Download and place mp4 files in `public/assets/` for background videos. These will be chosen randomly for each video composition.
-- Change the `public/assets/cody.png`and `public/assets/felippe.png` images to your own profile pictures. These are used in the video compositions.
+- Change the `public/assets/cody.png`and `src/video/Felippe.tsx` images to your own profile pictures. These are used in the video compositions.
 
 ## Available scripts
 

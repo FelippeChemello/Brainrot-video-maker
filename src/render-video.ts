@@ -7,17 +7,20 @@ import { publicDir } from './config/path';
 import { ScriptManagerClient } from './clients/interfaces/ScriptManager';
 import { NotionClient } from './clients/notion';
 import { AudioAlignerClient } from './clients/interfaces/AudioAligner';
-import { AeneasClient } from './clients/aeneas';
+import { MFAClient } from './clients/mfa';
 import { VideoRendererClient } from './clients/interfaces/VideoRenderer';
 import { RemotionClient } from './clients/remotion';
 import { MediaEditorClient } from './clients/interfaces/VideoManipulator';
 import { FFmpegClient } from './clients/ffmpeg';
+import { AeneasClient } from './clients/aeneas';
+import { VisemeAlignerClient } from './clients/interfaces/VisemeAligner';
 
 const MAX_DURATION_FOR_SHORT_CONVERSION = 350;
 const MAX_DURATION_OF_SHORT_VIDEO = 170;
 
 const scriptManager: ScriptManagerClient = new NotionClient()
 const audioAligner: AudioAlignerClient = new AeneasClient();
+const visemeAligner: VisemeAlignerClient = new MFAClient();
 const renderer: VideoRendererClient = new RemotionClient();
 const editor: MediaEditorClient = new FFmpegClient();
 
@@ -61,6 +64,16 @@ for (const script of scripts) {
 
     script.alignment = audio.alignment;
     script.duration = audio.duration;
+
+    const { visemes } = await visemeAligner.alignViseme({
+        audio: {
+            filepath: path.join(publicDir, script.audioSrc),
+            mimeType: script.audioMimeType!
+        },
+        text: textWithoutHTMLTags
+    });
+
+    script.visemes = visemes;
 
     fs.writeFileSync(path.join(publicDir, 'script.json'), JSON.stringify(script, null, 2));
 

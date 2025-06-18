@@ -2,7 +2,7 @@ import fs from 'fs';
 
 import { ENV } from "../config/env";
 import { AudioAlignerClient } from './interfaces/AudioAligner';
-import { AudioAlignerDTO, AudioAlignerResponse } from '../config/types';
+import { AeneasAlignment, AudioAlignerDTO, AudioAlignerResponse } from '../config/types';
 import { getAudioDurationInSeconds } from "get-audio-duration";
 
 export class AeneasClient implements AudioAlignerClient {
@@ -40,7 +40,7 @@ export class AeneasClient implements AudioAlignerClient {
 
                 console.log(`[AENEAS] Audio aligned successfully`)
 
-                return res.json() as Promise<{ fragments: Array<{ begin: string, end: string, id: string, lines: Array<string> }> }>
+                return res.json() as Promise<AeneasAlignment>
             })
             .catch(err => {
                 console.error(`[AENEAS] Error aligning audio: ${err.message}`)
