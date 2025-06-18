@@ -3,15 +3,18 @@ import {
   Audio,
   Img,
   OffthreadVideo,
+  random,
   Sequence,
   staticFile,
+  useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import { useMemo } from "react";
 import { z } from "zod";
 import { loadFont } from "@remotion/google-fonts/TitanOne";
 
-import { Speaker, videoSchema } from "../config/types";
-import FelippeImg from "../../public/assets/felippe.png";
+import { Speaker, videoSchema, Viseme } from "../config/types";
+import { Felippe } from './Felippe'
 import CodyImg from "../../public/assets/cody.png";
 import parseSentences from "./text-parser";
 import Text from "./Text";
@@ -20,8 +23,26 @@ import { LoopableOffthreadVideo } from "./LoopableOffthreadVideo";
 
 const { fontFamily } = loadFont();
 
-export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, background, audioSrc }) => {
-  const { fps } = useVideoConfig()
+export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, background, audioSrc, visemes }) => {
+  const { fps, durationInFrames } = useVideoConfig()
+  const frame = useCurrentFrame();
+
+  const blink = useMemo(() => {
+    const starts: number[] = [];
+    let f = Math.floor(2 * fps);
+    let i = 0;
+
+    while (f < durationInFrames) {
+      const interval = 2 * random(`blink-${background.seed}-${i}`) * 3;
+      starts.push(f);
+      f += Math.floor(interval * fps);
+      i++;
+    }
+
+    return starts;
+  }, [background.seed, durationInFrames, fps]);
+
+  const isBlinking = blink.some(s => frame >= s && frame < s + 3)
 
   return (
     <AbsoluteFill style={{ backgroundColor: background.color, fontFamily }}>
@@ -42,8 +63,8 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, back
           return acc + (currentItem.duration || 0);
         }, 0);
         const mediaType = segment.mediaSrc && getMimetypeFromFilename(segment.mediaSrc).type;
-
-        console.log(`Is media an image for segment ${index}:`, mediaType, segment.mediaSrc);
+        
+        const { viseme }  = visemes?.find(v => v.start * fps <= frame && v.end * fps > frame) || { viseme: undefined };
 
         const sentences = parseSentences(alignment)
 
@@ -51,7 +72,11 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, back
           <Sequence key={index} from={Math.floor(start * fps)} durationInFrames={Math.ceil(duration * fps)}>
             {speaker === Speaker.Felippe && (
               <AbsoluteFill>
-                <Img src={FelippeImg} className="absolute bottom-0 right-0 max-w-[50%]" />
+                <Felippe 
+                  className="w-[50%] h-auto absolute bottom-0 right-0 aspect-auto"
+                  eyesOpen={!isBlinking}
+                  mouth={viseme as Viseme}
+                />
 
                 {sentences.map((sentence, i) => {
                   return (

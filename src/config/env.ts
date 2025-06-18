@@ -7,6 +7,9 @@ const envSchema = z.object({
     
     AENEAS_BASE_URL: z.string(),
     AENEAS_API_KEY: z.string(),
+
+    MFA_BASE_URL: z.string(),
+    MFA_API_KEY: z.string(),
     
     OPENAI_API_KEY: z.string(),
 

@@ -78,6 +78,11 @@ export type ScriptWithTitle = {
         end: number;
         text: string;
     }>;
+    visemes?: Array<{
+        start: number;
+        end: number;
+        viseme: string;
+    }>;
 }
 
 export type SEO = {
@@ -103,6 +108,23 @@ export type AudioAlignerDTO = {
     text: string;
 }
 
+export type AeneasAlignment = { fragments: Array<{ begin: string, end: string, id: string, lines: Array<string> }> }
+
+export type MontrealAudioAlignment = {
+  start: number;
+  end: number;
+  tiers: {
+    words: {
+      type: 'interval';
+      entries: Array<[number, number, string]>
+    };
+    phones: {
+      type: 'interval';
+      entries: Array<[number, number, string]>
+    }
+  }
+}
+
 export type AudioAlignerResponse = {
     alignment: Array<{
         start: number;
@@ -111,6 +133,16 @@ export type AudioAlignerResponse = {
     }>;
     duration: number;
 }
+
+export type AudioToVisemeResponse = {
+    visemes?: Array<{
+        start: number;
+        end: number;
+        viseme: string;
+    }>;
+}
+
+export type Viseme = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | undefined
 
 export const videoSchema = z.object({
   background: z.object({
@@ -139,6 +171,11 @@ export const videoSchema = z.object({
     end: z.number(),
     text: z.string(),
   })),
+  visemes: z.array(z.object({
+    start: z.number(),
+    end: z.number(),
+    viseme: z.string(),
+  })).optional(),
   duration: z.number(),
   audioSrc: z.string(),
 });
