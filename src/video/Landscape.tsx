@@ -33,7 +33,7 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ segments, bac
     let i = 0;
 
     while (f < durationInFrames) {
-      const interval = 2 * random(`blink-${background.seed}-${i}`) * 3;
+      const interval = 2 + random(`blink-${background.seed}-${i}`) * 3;
       starts.push(f);
       f += Math.floor(interval * fps);
       i++;

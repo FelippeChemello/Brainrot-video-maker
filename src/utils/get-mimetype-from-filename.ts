@@ -14,6 +14,7 @@ export function getMimetypeFromFilename(filename: string): { mimeType: string; e
         webm: 'video/webm',
         webp: 'image/webp',
         svg: 'image/svg',
+        avif: 'image/avif',
     };
 
     const mimeType = mimeTypes[extension];
