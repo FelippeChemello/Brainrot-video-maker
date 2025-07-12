@@ -47,7 +47,7 @@ export const Agents: {
     SCRIPT_REVIEWER: {
         systemPrompt: fs.readFileSync(path.resolve(promptsDir, 'reviewer.md'), 'utf-8'),
         model: {
-            [ModelProvider.OPENAI]: 'gpt-4.5-preview',
+            [ModelProvider.OPENAI]: 'gpt-4o',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
             [ModelProvider.GEMINI]: 'gemini-2.5-flash-preview-05-20',
         },
@@ -59,7 +59,7 @@ export const Agents: {
     SEO_WRITER: {
         systemPrompt: fs.readFileSync(path.resolve(promptsDir, 'seo.md'), 'utf-8'),
         model: {
-            [ModelProvider.OPENAI]: 'gpt-4.5-preview',
+            [ModelProvider.OPENAI]: 'gpt-4o',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
             [ModelProvider.GEMINI]: 'gemini-2.5-flash-preview-05-20',
         },
