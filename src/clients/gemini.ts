@@ -43,7 +43,6 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient, LLMClient 
             config: {
                 responseModalities: ['AUDIO'],
                 speechConfig: {
-                    // @ts-expect-error preview feature
                     multiSpeakerVoiceConfig: {
                         speakerVoiceConfigs: [
                             {
@@ -137,7 +136,7 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient, LLMClient 
                 responseModalities: ['text'],
                 maxOutputTokens: 65536,
                 temperature: 0.7,
-                tools: [{ googleSearch: {} }],
+                tools: [{ googleSearch: {} }, { urlContext: {} }],
                 thinkingConfig: {
                     thinkingBudget: 4096,
                 }    

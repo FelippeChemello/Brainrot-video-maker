@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.54.0",
-    "@google/genai": "^0.13.0",
+    "@google/genai": "^1.9.0",
     "@notionhq/client": "^3.1.1",
     "@remotion/bundler": "4.0.314",
     "@remotion/cli": "4.0.314",

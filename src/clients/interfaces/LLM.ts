@@ -28,7 +28,7 @@ export const Agents: {
         model: {
             [ModelProvider.OPENAI]: 'gpt-4o',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
-            [ModelProvider.GEMINI]: 'gemini-2.5-flash-preview-05-20',
+            [ModelProvider.GEMINI]: 'gemini-2.5-pro',
         },
         responseParser: (response: string) => response.trim(),
     },
@@ -37,7 +37,7 @@ export const Agents: {
         model: {
             [ModelProvider.OPENAI]: 'o3',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
-            [ModelProvider.GEMINI]: 'gemini-2.5-flash-preview-05-20',
+            [ModelProvider.GEMINI]: 'gemini-2.5-pro',
         },
         responseParser: (response: string) => {
             const match = response.match(/\{[\s\S]*\}/);
@@ -49,7 +49,7 @@ export const Agents: {
         model: {
             [ModelProvider.OPENAI]: 'gpt-4o',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
-            [ModelProvider.GEMINI]: 'gemini-2.5-flash-preview-05-20',
+            [ModelProvider.GEMINI]: 'gemini-2.5-pro',
         },
         responseParser: (response: string) => {
             const match = response.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
@@ -61,7 +61,7 @@ export const Agents: {
         model: {
             [ModelProvider.OPENAI]: 'gpt-4o',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
-            [ModelProvider.GEMINI]: 'gemini-2.5-flash-preview-05-20',
+            [ModelProvider.GEMINI]: 'gemini-2.5-pro',
         },
         responseParser: (response: string) => {
             const match = response.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
