@@ -54,7 +54,7 @@ export class RemotionClient implements VideoRendererClient {
             disallowParallelEncoding: false,
             timeoutInMilliseconds: timeout,
             port,
-            concurrency: '80%',
+            concurrency: '50%',
             onStart: (started) => {
                 renderedFrames.setTotal(started.frameCount);
                 encodedFrames.setTotal(started.frameCount);

@@ -27,6 +27,10 @@ const editor: MediaEditorClient = new FFmpegClient();
 const scripts = await scriptManager.retrieveScript(ScriptStatus.NOT_STARTED);
 
 for (const script of scripts) {
+    await scriptManager.downloadAssets(script);
+}   
+
+for (const script of scripts) {
     if (!script.id) {
         console.log(`Script "${script.title}" does not have an ID`);
         continue;
@@ -42,71 +46,114 @@ for (const script of scripts) {
         continue;
     }
 
-    await scriptManager.updateScriptStatus(script.id, ScriptStatus.IN_PROGRESS);
+    try {
+        await scriptManager.updateScriptStatus(script.id, ScriptStatus.IN_PROGRESS);
 
-    const assets = await scriptManager.retrieveAssets(script.id);
-    script.background = assets.background;
+        const assets = await scriptManager.retrieveAssets(script.id);
+        script.background = assets.background;
 
-    await scriptManager.downloadAssets(script);
+        const textWithoutHTMLTags = script.segments.map((segment) => {
+            return segment.text.replace(/<\/?[^>]+(>|$)/g, "");
+        }).join('\n');
 
-    const textWithoutHTMLTags = script.segments.map((segment) => {
-        return segment.text.replace(/<\/?[^>]+(>|$)/g, "");
-    }).join('\n');
-
-    console.log(`Aligning audio for script ${script.title}...`);
-    const audio = await audioAligner.alignAudio({
-        audio: {
-            filepath: path.join(publicDir, script.audioSrc),
-            mimeType: script.audioMimeType!
-        },
-        text: textWithoutHTMLTags
-    })
-
-    script.alignment = audio.alignment;
-    script.duration = audio.duration;
-
-    const { visemes } = await visemeAligner.alignViseme({
-        audio: {
-            filepath: path.join(publicDir, script.audioSrc),
-            mimeType: script.audioMimeType!
-        },
-        text: textWithoutHTMLTags
-    });
-
-    script.visemes = visemes;
-
-    fs.writeFileSync(path.join(publicDir, 'script.json'), JSON.stringify(script, null, 2));
-
-    const videos: string[] = []
-    for (const composition of script.compositions) {
-        console.log(`Rendering ${composition} for script ${script.title}...`);
-        const videoPath = await renderer.renderVideo(script, composition);
+        const audioFilePath = path.join(publicDir, script.audioSrc);
         
-        console.log(`Rendered video for composition ${composition} at path: ${videoPath}`);
-        videos.push(videoPath);
-
-        const videoDuration = await getVideoDurationInSeconds(videoPath);
-        if (composition === 'Portrait' && videoDuration <= MAX_DURATION_FOR_SHORT_CONVERSION && videoDuration > MAX_DURATION_OF_SHORT_VIDEO) {
-            const speedFactor = Math.ceil((videoDuration / MAX_DURATION_OF_SHORT_VIDEO) * 100) / 100;
-
-            console.log(`Speeding up video by a factor of ${speedFactor} to convert to short format`);
-            const videoShortPath = await editor.speedUpVideo(videoPath, speedFactor);
-            
-            console.log(`Speeded up video saved at: ${videoShortPath}`);
-            videos.push(videoShortPath);
+        if (!fs.existsSync(audioFilePath)) {
+            console.error(`Audio file not found: ${audioFilePath}`);
+            await scriptManager.updateScriptStatus(script.id, ScriptStatus.ERROR);
+            continue;
         }
-    }
 
-    console.log(`Saving output for script ${script.title}...`);
-    await scriptManager.saveOutput(script.id, videos)
-    await scriptManager.updateScriptStatus(script.id, ScriptStatus.DONE);
+        console.log(`Aligning audio for script ${script.title}...`);
+        const audio = await audioAligner.alignAudio({
+            audio: {
+                filepath: audioFilePath,
+                mimeType: script.audioMimeType!
+            },
+            text: textWithoutHTMLTags
+        })
 
-    console.log(`Cleaning up assets for script ${script.title}...`);
+        script.alignment = audio.alignment;
+        script.duration = audio.duration;
 
-    fs.unlinkSync(path.join(publicDir, script.audioSrc));
-    for (const segment of script.segments) {
-        if (segment.mediaSrc) {
-            fs.unlinkSync(path.join(publicDir, segment.mediaSrc));
+        const { visemes } = await visemeAligner.alignViseme({
+            audio: {
+                filepath: audioFilePath,
+                mimeType: script.audioMimeType!
+            },
+            text: textWithoutHTMLTags
+        });
+
+        script.visemes = visemes;
+
+        const scriptFileName = `script-${script.id}.json`;
+        fs.writeFileSync(path.join(publicDir, scriptFileName), JSON.stringify(script, null, 2));
+
+        const videos: string[] = []
+        for (const composition of script.compositions) {
+            console.log(`Rendering ${composition} for script ${script.title}...`);
+            const videoPath = await renderer.renderVideo(script, composition);
+            
+            console.log(`Rendered video for composition ${composition} at path: ${videoPath}`);
+            videos.push(videoPath);
+
+            const videoDuration = await getVideoDurationInSeconds(videoPath);
+            if (composition === 'Portrait' && videoDuration <= MAX_DURATION_FOR_SHORT_CONVERSION && videoDuration > MAX_DURATION_OF_SHORT_VIDEO) {
+                const speedFactor = Math.ceil((videoDuration / MAX_DURATION_OF_SHORT_VIDEO) * 100) / 100;
+
+                console.log(`Speeding up video by a factor of ${speedFactor} to convert to short format`);
+                const videoShortPath = await editor.speedUpVideo(videoPath, speedFactor);
+                
+                console.log(`Speeded up video saved at: ${videoShortPath}`);
+                videos.push(videoShortPath);
+            }
+        }
+
+        console.log(`Saving output for script ${script.title}...`);
+        await scriptManager.saveOutput(script.id, videos)
+        await scriptManager.updateScriptStatus(script.id, ScriptStatus.DONE);
+
+        console.log(`Cleaning up assets for script ${script.title}...`);
+
+        if (fs.existsSync(audioFilePath)) {
+            fs.unlinkSync(audioFilePath);
+        }
+        
+        const scriptFilePath = path.join(publicDir, scriptFileName);
+        if (fs.existsSync(scriptFilePath)) {
+            fs.unlinkSync(scriptFilePath);
+        }
+        
+        for (const segment of script.segments) {
+            if (segment.mediaSrc) {
+                const mediaFilePath = path.join(publicDir, segment.mediaSrc);
+                if (fs.existsSync(mediaFilePath)) {
+                    fs.unlinkSync(mediaFilePath);
+                }
+            }
+        }
+    } catch (error) {
+        console.error(`Error processing script ${script.title}:`, error);
+        
+        await scriptManager.updateScriptStatus(script.id, ScriptStatus.ERROR);
+        
+        const audioFilePath = path.join(publicDir, script.audioSrc);
+        if (fs.existsSync(audioFilePath)) {
+            fs.unlinkSync(audioFilePath);
+        }
+        
+        const scriptFilePath = path.join(publicDir, `script-${script.id}.json`);
+        if (fs.existsSync(scriptFilePath)) {
+            fs.unlinkSync(scriptFilePath);
+        }
+        
+        for (const segment of script.segments) {
+            if (segment.mediaSrc) {
+                const mediaFilePath = path.join(publicDir, segment.mediaSrc);
+                if (fs.existsSync(mediaFilePath)) {
+                    fs.unlinkSync(mediaFilePath);
+                }
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ export enum ScriptStatus {
     IN_PROGRESS = 'In progress',
     DONE = 'Done',
     PUBLISHED = 'Published',
+    ERROR = 'Error',
 }
 
 export type NotionMainDatabasePage = {
