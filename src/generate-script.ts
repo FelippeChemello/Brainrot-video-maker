@@ -13,11 +13,10 @@ import { OpenAIClient } from "./clients/openai";
 import { AnthropicClient } from "./clients/anthropic";
 import { GeminiClient } from "./clients/gemini";
 
-const openai: LLMClient = new OpenAIClient();
+const openai: LLMClient & ImageGeneratorClient = new OpenAIClient();
 const anthropic: LLMClient = new AnthropicClient();
-const gemini: LLMClient = new GeminiClient();
+const gemini: LLMClient & ImageGeneratorClient = new GeminiClient();
 const scriptManagerClient: ScriptManagerClient = new NotionClient();
-const imageGenerator: ImageGeneratorClient = new GeminiClient();
 
 const topic = process.argv[2]
 if (!topic) {
@@ -65,7 +64,7 @@ ${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
             }
 
             console.log(`[${index + 1}/${script.segments.length}] Generating image`);
-            const { mediaSrc } = await imageGenerator.generate(segment.image_description, index);
+            const { mediaSrc } = await gemini.generate(segment.image_description, index);
             
             script.segments[index].mediaSrc = mediaSrc;
             iterationsInMinute++;
@@ -76,7 +75,9 @@ ${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
     const { text: seoText } = await anthropic.complete(Agent.SEO_WRITER, review)
     const seo = JSON.parse(seoText);
 
-    await scriptManagerClient.saveScript(script, seo)
+    const { mediaSrc: thumbnailSrc } = await openai.generateThumbnail(script.title, seo.description)
+
+    await scriptManagerClient.saveScript(script, seo, thumbnailSrc)
 
     console.log(`Cleaning up assets...`)
     for (const segment of script.segments) {

@@ -45,7 +45,7 @@
     "get-audio-duration": "^4.0.1",
     "get-video-duration": "^4.1.0",
     "matter-js": "^0.20.0",
-    "openai": "^5.0.1",
+    "openai": "^5.10.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "remotion": "4.0.314",

@@ -12,6 +12,7 @@ const envSchema = z.object({
     MFA_API_KEY: z.string(),
     
     OPENAI_API_KEY: z.string(),
+    OPENAI_FELIPPE_FILE_ID: z.string(),
 
     ANTHROPIC_API_KEY: z.string(),
     

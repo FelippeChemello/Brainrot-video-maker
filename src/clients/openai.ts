@@ -5,12 +5,13 @@ import path from 'path';
 import { v4 } from 'uuid';
 
 import { ENV } from '../config/env';
-import { publicDir } from '../config/path';
+import { outputDir, publicDir } from '../config/path';
 import { TTSClient } from './interfaces/TTS';
 import { Script, Speaker } from '../config/types';
 import { concatAudioFiles } from '../utils/concat-audio-files';
 import { ImageGeneratorClient } from './interfaces/ImageGenerator';
 import { Agents, LLMClient, Agent } from './interfaces/LLM';
+import { titleToFileName } from '../utils/title-to-filename';
 
 const openai = new OpenAI({
     apiKey: ENV.OPENAI_API_KEY,
@@ -103,6 +104,51 @@ export class OpenAIClient implements TTSClient, ImageGeneratorClient, LLMClient 
                 fs.writeFileSync(imagePath, Buffer.from(image.result, 'base64'));
                 mediaSrc = filename;
             }
+        }
+
+        return { mediaSrc }
+    }
+
+    async generateThumbnail(videoTitle: string, videoDescription: string): Promise<{ mediaSrc?: string }> {
+        console.log(`[OPENAI] Generating thumbnail for script: ${videoTitle}`);
+        
+        const felippeFileId = process.env.OPENAI_FELIPPE_FILE_ID;
+
+        const response = await openai.responses.create({
+            model: 'gpt-4.1',
+            input: [{
+                role: 'system',
+                content: "You are a thumbnail generator AI. Your task is to create a thumbnail for a TikTok video based on the provided details. Always generate a thumbnail with a 9:16 aspect ratio, suitable for TikTok. The thumbnail should be visually appealing and relevant to the content of the video. The text should be concise and engaging, ideally no more than 5 words in PORTUGUESE. The thumbnail should include Felippe acting some action related to the video topic."
+            }, {
+                role: 'user',
+                content: [
+                    {
+                        type: 'input_text',
+                        text: `A imagem de referência é uma ilustração de Felippe, use-a como base para criar a thumbnail. \n\n Gere uma thumbnail para o vídeo sobre o seguinte assunto ${videoTitle}.\n\n ${videoDescription}`,
+                    },
+                    {
+                        type: 'input_image',
+                        file_id: felippeFileId,
+                        detail: 'low',
+                    }
+                ]
+            }],
+            tools: [{ type: 'image_generation', quality: 'high', background: 'opaque', input_fidelity: 'low', output_format: 'png', size: '1024x1536' }],
+        })
+
+        const imageData = response.output
+            .find(out => out.type === 'image_generation_call')
+
+        // @ts-expect-error image is not typed correctly in the OpenAI client
+        console.log(`[OPENAI] Thumbnail generated with the following prompt: ${imageData?.revised_prompt}`);        
+
+        let mediaSrc: string | undefined
+
+        const filename = `thumbnail-${titleToFileName(videoTitle)}.png`;
+        const imagePath = path.join(outputDir, filename);
+        if (imageData) {
+            fs.writeFileSync(imagePath, Buffer.from(imageData.result!, 'base64'));
+            mediaSrc = filename;
         }
 
         return { mediaSrc }

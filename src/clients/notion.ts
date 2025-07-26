@@ -24,7 +24,7 @@ const client = new Client({
 })
 
 export class NotionClient implements ScriptManagerClient {
-    async saveScript(script: ScriptWithTitle, seo: SEO): Promise<void> {
+    async saveScript(script: ScriptWithTitle, seo: SEO, thumbnailFilename?: string): Promise<void> {
         console.log(`[NOTION] Saving script ${script.title}`);
 
         let audioFileId: string | null = null;
@@ -32,6 +32,13 @@ export class NotionClient implements ScriptManagerClient {
             console.log(`[NOTION] Uploading audio: ${script.audioSrc}`);
 
             audioFileId = await this.uploadFile(path.join(publicDir, script.audioSrc));
+        }
+
+        let thumbnailFileId: string | null = null;
+        if (thumbnailFilename) {
+            console.log(`[NOTION] Uploading thumbnail: ${thumbnailFilename}`);
+
+            thumbnailFileId = await this.uploadFile(path.join(outputDir, thumbnailFilename));
         }
 
         const page = await client.pages.create({
@@ -58,7 +65,13 @@ export class NotionClient implements ScriptManagerClient {
                 },
                 Title: {
                     rich_text: [{ type: 'text', text: { content: `${seo.title}\n\n${seo.description}\n\n${seo.hashtags.join(" ")}` } }],
-                }
+                },
+                Output: { 
+                    files: thumbnailFileId ? [{
+                        type: 'file_upload',
+                        file_upload: { id: thumbnailFileId },
+                    }] : [],
+                } 
             }
         })
 

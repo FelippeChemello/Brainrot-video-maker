@@ -5,13 +5,15 @@ import terminalImage from 'terminal-image';
 
 import { ImageGeneratorClient } from './interfaces/ImageGenerator';
 import { ENV } from '../config/env';
-import { publicDir } from '../config/path';
+import { outputDir, publicDir } from '../config/path';
 import { v4 } from 'uuid';
 import { TTSClient } from './interfaces/TTS';
 import { Script, Speaker } from '../config/types';
 import { saveWaveFile } from '../utils/save-wav-file';
 import getAudioDurationInSeconds from 'get-audio-duration';
 import { Agent, Agents, LLMClient } from './interfaces/LLM';
+import { titleToFileName } from '../utils/title-to-filename';
+import path from 'path';
 
 const genAI = new GoogleGenAI({ apiKey: ENV.GEMINI_API_KEY })
 
@@ -123,6 +125,57 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient, LLMClient 
             
             return { mediaSrc: undefined }
         }
+    }
+
+    async generateThumbnail(videoTitle: string, description: string): Promise<{ mediaSrc?: string; }> {
+        let mediaSrc: string | undefined
+
+        console.log(`[GEMINI] Generating thumbnail for script: ${videoTitle}`);
+
+        const felippeImg = fs.readFileSync(path.resolve(publicDir, 'assets', 'felippe.png')).toString('base64')
+
+        const imageResult = await genAI.models.generateContent({
+            model: 'gemini-2.0-flash-exp-image-generation',
+            contents: [
+                { text: 'You are a thumbnail generator AI. Your task is to create a thumbnail for a TikTok video based on the provided details. Always generate a thumbnail with a 9:16 aspect ratio, suitable for TikTok. The thumbnail should be visually appealing and relevant to the content of the video. The text should be concise and engaging, ideally no more than 5 words in PORTUGUESE. The thumbnail should include Felippe acting some action related to the video topic.' },
+                { text: `Video Title: ${videoTitle} \n\n ${description}` },
+                { inlineData: { mimeType: 'image/png', data: felippeImg } }
+            ],
+            config: { responseModalities: ['text', 'image'] },
+        })
+
+        const parts = imageResult.candidates![0].content?.parts!
+        for (const part of parts) {
+            if (part.text) {
+                console.log(`[GEMINI] Text response: ${part.text}`);
+                continue
+            }
+
+            if (part.inlineData) {
+                const mimeType = part.inlineData.mimeType
+                const base64Data = part.inlineData.data
+                if (!base64Data) {
+                    throw new Error('No base64 data found in the response');
+                }
+
+                console.log(`[GEMINI] Thumbnail generated successfully: ${mimeType}`);
+
+                const imageBuffer = Buffer.from(base64Data, 'base64')
+                console.log(await terminalImage.buffer(imageBuffer))
+
+                const filename = `thumbnail-${titleToFileName(videoTitle)}.png`;
+                const imagePath = path.join(outputDir, filename);
+                if (imageBuffer) {
+                    fs.writeFileSync(imagePath, imageBuffer);
+                    mediaSrc = filename;
+                }
+                console.log(`[GEMINI] Image saved to ${imagePath}`);
+                
+                return { mediaSrc: filename }
+            }
+        }
+
+        return { mediaSrc }
     }
 
     async complete(agent: Agent, prompt: string): Promise<{ text: string }> {
