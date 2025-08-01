@@ -36,8 +36,12 @@ export class MFAClient implements VisemeAlignerClient {
             })
             .catch(err => {
                 console.error(`[MFA] Error aligning audio: ${err.message}`)
-                throw new Error('Failed to align audio with text')
             })
+
+        if (!aligned) {
+            return { visemes: undefined }
+        }
+
 
         const visemes = aligned.tiers.phones.entries.map(phone => {
             const viseme = Phone2Viseme[phone[2]]

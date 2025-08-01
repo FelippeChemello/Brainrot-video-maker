@@ -27,6 +27,11 @@ if (!topic) {
 console.log(`Starting research on topic: ${topic}`);
 const { text: research } = await gemini.complete(Agent.RESEARCHER, `Tópico: ${topic}`);
 
+console.log("--------------------------")
+console.log("Research:")
+console.log(research)
+console.log("--------------------------")
+
 console.log("Writing script based on research...");
 const { text: scriptText } = await openai.complete(Agent.SCRIPT_WRITER, `Tópico: ${topic}\n\n Utilize o seguinte contexto para escrever um roteiro de vídeo:\n\n${research}`);
 
