@@ -124,7 +124,7 @@ export class OpenAIClient implements TTSClient, ImageGeneratorClient, LLMClient 
                 content: [
                     {
                         type: 'input_text',
-                        text: `A imagem de referência é uma ilustração de Felippe, use-a como base para criar a thumbnail. \n\n Gere uma thumbnail para o vídeo sobre o seguinte assunto ${videoTitle}.\n\n ${videoDescription}`,
+                        text: `A imagem de referência é uma ilustração de Felippe, use-a como base para criar a thumbnail. \n\n Gere uma thumbnail para o vídeo sobre o seguinte assunto "${videoTitle}".\n\n ${videoDescription}`,
                     },
                     {
                         type: 'input_image',
@@ -136,10 +136,9 @@ export class OpenAIClient implements TTSClient, ImageGeneratorClient, LLMClient 
             tools: [{ type: 'image_generation', quality: 'high', background: 'opaque', input_fidelity: 'low', output_format: 'png', size: '1024x1536' }],
         })
 
-        const imageData = response.output
-            .find(out => out.type === 'image_generation_call')
+        const imageData = response.output.find(out => out.type === 'image_generation_call');
 
-        // @ts-expect-error image is not typed correctly in the OpenAI client
+        // @ts-expect-error imageData contains revised_prompt
         console.log(`[OPENAI] Thumbnail generated with the following prompt: ${imageData?.revised_prompt}`);        
 
         let mediaSrc: string | undefined
