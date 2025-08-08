@@ -26,7 +26,7 @@ export const Agents: {
     RESEARCHER: {
         systemPrompt: fs.readFileSync(path.resolve(promptsDir, 'researcher.md'), 'utf-8'),
         model: {
-            [ModelProvider.OPENAI]: 'gpt-4o',
+            [ModelProvider.OPENAI]: 'gpt-5',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
             [ModelProvider.GEMINI]: 'gemini-2.5-pro',
         },
@@ -35,7 +35,7 @@ export const Agents: {
     SCRIPT_WRITER: {
         systemPrompt: fs.readFileSync(path.resolve(promptsDir, 'writer.md'), 'utf-8'),
         model: {
-            [ModelProvider.OPENAI]: 'o3',
+            [ModelProvider.OPENAI]: 'gpt-5',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
             [ModelProvider.GEMINI]: 'gemini-2.5-pro',
         },
@@ -47,7 +47,7 @@ export const Agents: {
     SCRIPT_REVIEWER: {
         systemPrompt: fs.readFileSync(path.resolve(promptsDir, 'reviewer.md'), 'utf-8'),
         model: {
-            [ModelProvider.OPENAI]: 'gpt-4o',
+            [ModelProvider.OPENAI]: 'gpt-5',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
             [ModelProvider.GEMINI]: 'gemini-2.5-pro',
         },
@@ -59,7 +59,7 @@ export const Agents: {
     SEO_WRITER: {
         systemPrompt: fs.readFileSync(path.resolve(promptsDir, 'seo.md'), 'utf-8'),
         model: {
-            [ModelProvider.OPENAI]: 'gpt-4o',
+            [ModelProvider.OPENAI]: 'gpt-5',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
             [ModelProvider.GEMINI]: 'gemini-2.5-pro',
         },

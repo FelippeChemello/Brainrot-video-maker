@@ -77,7 +77,7 @@ ${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
     }
 
     console.log("Generating SEO content...");
-    const { text: seoText } = await anthropic.complete(Agent.SEO_WRITER, review)
+    const { text: seoText } = await openai.complete(Agent.SEO_WRITER, review)
     const seo = JSON.parse(seoText);
 
     const { mediaSrc: thumbnailSrc } = await openai.generateThumbnail(script.title, seo.description)
