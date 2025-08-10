@@ -143,7 +143,7 @@ export class OpenAIClient implements TTSClient, ImageGeneratorClient, LLMClient 
 
         let mediaSrc: string | undefined
 
-        const filename = `thumbnail-${titleToFileName(videoTitle)}.png`;
+        const filename = `${titleToFileName(videoTitle)}-Thumbnail.png`;
         const imagePath = path.join(outputDir, filename);
         if (imageData) {
             fs.writeFileSync(imagePath, Buffer.from(imageData.result!, 'base64'));
