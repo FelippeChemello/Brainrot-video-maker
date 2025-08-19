@@ -20,6 +20,7 @@ import parseSentences from "./text-parser";
 import Text from "./Text";
 import { getMimetypeFromFilename } from "../utils/get-mimetype-from-filename";
 import { LoopableOffthreadVideo } from "./LoopableOffthreadVideo";
+import { ImageWithBackground } from "./ImageWithBackground";
 
 const { fontFamily } = loadFont();
 
@@ -117,10 +118,7 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, back
             {segment.mediaSrc && (
               <AbsoluteFill className="absolute max-w-full max-h-1/3 !top-0 !right-[unset] !left-[unset] p-4">
                 {mediaType === 'image' ? (
-                  <Img
-                    src={staticFile(segment.mediaSrc)}
-                    className="w-full h-full object-contain"
-                  />
+                  <ImageWithBackground src={staticFile(segment.mediaSrc)} />
                 ) : (
                   <LoopableOffthreadVideo
                     src={staticFile(segment.mediaSrc)}

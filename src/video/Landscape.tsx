@@ -20,6 +20,7 @@ import Text from "./Text";
 import { Felippe } from "./Felippe";
 import { getMimetypeFromFilename } from "../utils/get-mimetype-from-filename";
 import { LoopableOffthreadVideo } from "./LoopableOffthreadVideo";
+import { ImageWithBackground } from "./ImageWithBackground";
 
 const { fontFamily } = loadFont();
 
@@ -95,10 +96,7 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ segments, bac
                 {segment.mediaSrc && (
                   <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !top-0 !left-[0] p-8">
                     {mediaType === 'image' ? (
-                      <Img
-                        src={staticFile(segment.mediaSrc)}
-                        className="w-full h-full object-contain"
-                      />
+                      <ImageWithBackground src={staticFile(segment.mediaSrc)} />
                     ) : (
                       <LoopableOffthreadVideo
                         src={staticFile(segment.mediaSrc)}
@@ -133,10 +131,7 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ segments, bac
                 {segment.mediaSrc && (
                   <AbsoluteFill className="absolute max-w-[60%] max-h-1/2 !top-0 !right-0 !left-[unset] p-4">
                     {mediaType === 'image' ? (
-                      <Img
-                        src={staticFile(segment.mediaSrc)}
-                        className="w-full h-full object-contain"
-                      />
+                      <ImageWithBackground src={staticFile(segment.mediaSrc)} />
                     ) : (
                       <LoopableOffthreadVideo
                         src={staticFile(segment.mediaSrc)}
