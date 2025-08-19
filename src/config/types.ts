@@ -96,7 +96,10 @@ export type SEO = {
 export type Script = Array<{
     text: string;
     speaker: Speaker;
-    image_description?: string;
+    illustration?: {
+      type: 'query' | 'image_generation' | 'mermaid'
+      description: string
+    }
 } & {
     mediaSrc?: string;
 }>

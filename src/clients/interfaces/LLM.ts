@@ -8,6 +8,7 @@ export enum Agent {
     SCRIPT_REVIEWER = 'SCRIPT_REVIEWER',
     SEO_WRITER = 'SEO_WRITER',
     RESEARCHER = 'RESEARCHER',
+    MERMAID_GENERATOR = 'MERMAID_GENERATOR',
 }
 
 enum ModelProvider {
@@ -68,6 +69,16 @@ export const Agents: {
             return match ? match[0] : response.replace(/```\w*\n/g, '').replace(/```/g, '').trim();
         },
     },
+    MERMAID_GENERATOR: {
+        systemPrompt: fs.readFileSync(path.resolve(promptsDir, 'mermaid-generator.md'), 'utf-8'),
+        model: {
+            [ModelProvider.OPENAI]: 'gpt-5',
+            [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
+            [ModelProvider.GEMINI]: 'gemini-2.5-pro',
+        },
+        responseParser: (response: string) => response.trim()
+    }
+
 }
 
 export interface LLMClient {

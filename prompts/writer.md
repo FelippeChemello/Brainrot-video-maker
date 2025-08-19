@@ -9,7 +9,10 @@ type Script = {
     segments: Array<{
         speaker: 'Felippe' | 'Cody'; 
         text: string; // The text should be in Portuguese language
-        image_description?: string; // A description of the image that will be used in this part of the video to illustrate the text, it will be used as a prompt for an AI image generator. The image should not contain any person, must be only illustrative and related to the text (optional, in English language)
+        illustration?: {
+            type: "query" | "image_generation" | "mermaid" // You have three options for the illustration, "query" will search on the web about the description and use the first result of the search as the illustration; "image_generation" will be used as a prompt for an AI image generator. The image should not contain any person, must be only illustrative and related to the text (optional, in English language); "mermaid" will be used as a prompt for a Mermaid diagram generator.
+            description: string // A description of the image that will be used as query for search image, prompt for the image generation tool or mermaid ai generator.
+        };
     }>
 ```
 
@@ -28,37 +31,58 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Cody",
             "text": "Felippe, how does TikTok store billions of videos and load them so fast?",
-            "image_description": "Tiktok logo"
+            "illustration": {
+                "type": "query",
+                "description": "TikTok logo"
+            }
         },
         {
             "speaker": "Felippe",
             "text": "They store videos in object storage like S3 or GCS.",
-            "image_description": "AWS S3 logo and Google Cloud Storage logo"
+            "illustration": {
+                "type": "image_generation",
+                "description": "S3 logo and Google Cloud Storage logo"
+            }
         },
         {
             "speaker": "Felippe",
             "text": "These systems lack the complex query capabilities of regular databases, but are optimized for storing massive amount of files durably and fast access times.",
-            "image_description": "A data center with many servers"
+            "illustration": {
+                "type": "query",
+                "description": "Data center"
+            }
         },
         {
             "speaker": "Cody",
             "text": "Okay, that explains the storage, but how do they load so fast?",
-            "image_description": "A person using a smartphone with TikTok app open"
+            "illustration": {
+                "type": "query",
+                "description": "A person using Tiktok on a smartphone"
+            }
         },
         {
             "speaker": "Felippe",
             "text": "To make it fast, your requests go first through a CDN, a content delivery network.",
-            "image_description": "A diagram showing the flow of data from a server to a user through a CDN"
+            "illustration": {
+                "type": "mermaid",
+                "description": "A diagram showing the flow of data from a server to a user through a CDN"
+            }
         },
         {
             "speaker": "Felippe",
             "text": "If someone near you watched a video, it gets cached at a nearby server, so when you swipe to watch the same video, it will load much faster.",
-            "image_description": "A map showing multiple servers around the world with a user in the center"
+            "illustration": {
+                "type": "image_generation",
+                "description": "A map showing multiple servers around the world with a user in the center"
+            }
         },
         {
             "speaker": "Felippe",
             "text": "To speed this up even more, they store a single video in multiple different formats, so they can provide you with the most suitable one for your device and internet quality",
-            "image_description": "A diagram showing different video formats and their compatibility with different devices"
+            "illustration": {
+                "type": "mermaid",
+                "description": "A diagram showing different video formats and their compatibility with different devices"
+            }
         },
         {
             "speaker": "Cody",
@@ -67,7 +91,10 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Felippe",
             "text": "You're absolutely right, Cody. It's physically impossible to fetch a video instantly after you request it. That's why TikTok loads multiple videos the moment you open the app. Everything you're about to see is already halfway or fully loaded.",
-            "image_description": "A diagram showing the process of preloading videos in the TikTok app"
+            "illustration": {
+                "type": "image_generation",
+                "description: "A diagram showing the process of preloading videos in the TikTok app"
+            }
         },
         {
             "speaker": "Cody",
@@ -76,7 +103,10 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Felippe",
             "text": "When you scroll through reels, your likes, comments, watch time, and tags get turned into vectors. Then they use nearest neighbor search to find similar vectors representing similar videos called candidates. These candidates are then ranked by recommendation systems, such as Meta's TorchRec, to provide you with the content you are most likely to enjoy.",
-            "image_description": "A diagram showing the process of vectorization and recommendation systems"
+            "illustration": {
+                "type": "image_generation",
+                "description": "A diagram showing the process of vectorization and recommendation systems"
+            }
         },
         {
             "speaker": "Cody",
@@ -97,12 +127,18 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Cody",
             "text": "Felippe, como eu faço para criar um app de mensagens tipo WhatsApp? Estou perdido!.",
-            "image_description": "WhatsApp logo"
+            "illustration": {
+                "type": "query",
+                "description": "WhatsApp logo"
+            }
         },
         {
             "speaker": "Felippe",
             "text": "Vamos por partes... Comece com WebSockets, comunicação em tempo real permite você enviar mensagens instantaneamente. É essencial para chats modernos.",
-            "image_description": "A diagram showing WebSocket connection"
+            "illustration": {
+                "type": "mermaid",
+                "description": "A diagram showing WebSocket connection"
+            }
         },
         {
             "speaker": "Cody",
@@ -111,7 +147,10 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Felippe",
             "text": "Para alto throughput, eu iria de Elixir com Phoenix Channels ou Go - essas linguagens são feras em concorrência.",
-            "image_description": "A logo of Elixir programming language and Phoenix Framework"
+            "illustration": {
+                "type": "query",
+                "description": "A logo of Elixir programming language and Phoenix Framework"
+            }
         },
         {
             "speaker": "Felippe",
@@ -124,7 +163,10 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Felippe",
             "text": "Comece com um banco de dados relacional como PostgreSQL para mensagens e usuários. Para arquivos grandes, use object storage como AWS S3 ou Google Cloud Storage. É barato e escalável.",
-            "image_description": "PostgreSQL logo and AWS S3 logo"
+            "illustration": {
+                "type": "query",
+                "description": "PostgreSQL logo and AWS S3 logo"
+            }
         },
         {
             "speaker": "Felippe",
@@ -133,17 +175,26 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Cody",
             "text": "Saquei! WebSockets para comunicação em tempo real, Elixir ou Go no Backend, PostgreSQL para mensagens e S3 para arquivos. E se eu quiser escalar isso tudo?",
-            "image_description": "Firebase logo"
+            "illustration": {
+                "type": "query",
+                "description": "Firebase logo"
+            }
         },
         {
             "speaker": "Felippe",
             "text": "Para escalar, você pode usar Kubernetes para orquestrar seus containers. Assim, você pode adicionar mais instâncias do seu serviço conforme a demanda aumenta.",
-            "image_description": "A diagram showing Kubernetes architecture with multiple containers and nodes"
+            "illustration": {
+                "type": "image_generation",
+                "description": "A diagram showing Kubernetes architecture with multiple containers and nodes"
+            }
         },
         {
             "speaker": "Felippe",
             "text": "E não esquece de monitorar tudo com ferramentas como Prometheus e Grafana para garantir que está tudo rodando liso.",
-            "image_description": "Logo of Prometheus and Grafana"
+            "illustration": {
+                "type": "query",
+                "description": "Logo of Prometheus and Grafana"
+            }
         },
         {
             "speaker": "Cody",
@@ -164,12 +215,18 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Cody",
             "text": "Felippe, how does my iPhone's face ID recognize me after taking just one photo of me?",
-            "image_description": "Apple FaceID logo"
+            "illustration": {
+                "type": "query",
+                "description": "Apple FaceID logo"
+            }
         },
         {
             "speaker": "Felippe",
             "text": "Actually, Cody, it doesn't take a regular photo at all. Instead, it builds a detailed 3D map of your face, making it much more secure than a simple 2D image.",
-            "image_description": "3D map of a face with facial features highlighted"
+            "illustration": {
+                "type": "image_generation",
+                "description": "3D map of a face with facial features highlighted"
+            }
         },
         {
             "speaker": "Cody",
@@ -178,7 +235,10 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Felippe",
             "text": "Your iPhone uses something called a TrueDepth camera system. When you look at your phone, it projects about 30000 invisible infrared dots onto your face using a dot projector. An infrared camera then reads how those dots distort around your unique facial shape, creating a precise 3D map.",
-            "image_description": "A diagram showing the TrueDepth camera system with a phone projecting dots onto a face"
+            "illustration": {
+                "type": "image_generation",
+                "description": "A diagram showing the TrueDepth camera system with a phone projecting dots onto a face"
+            }
         },
         {
             "speaker": "Felippe",
@@ -207,7 +267,10 @@ Here are some examples of how the script should look like, keep the same structu
         {
             "speaker": "Felippe",
             "text": "Apple thought of that too. Your face ID data isn't stored in regular memory. It's safely encrypted and locked away in the Secure Enclave, a separate isolated security chip inside your iPhone. Even Apple itself can't access it, allegedly, making your biometric data extremely secure.",
-            "image_description": "A diagram showing the Secure Enclave chip inside an iPhone"
+            "illustration": {
+                "type": "image_generation",
+                "description": "A diagram showing the Secure Enclave chip inside an iPhone"
+            }
         },
         {
             "speaker": "Cody",
@@ -224,11 +287,11 @@ Here are some examples of how the script should look like, keep the same structu
 These are just examples, you should create a new script based on the topic provided, with your own content and structure.
 
 <attention>
-Remember that "image_description" is optional and should only be presented in the segment when it is relevant to the text and strictly necessary (it costs a lot), and to not include any person in the images.
+Remember that "illustration" is optional and should only be presented in the segment when it is relevant to the text and strictly necessary (it costs a lot), and to not include any person in the images.
+The first paragraph must always be illustrated with a logo or the main topic of the video.
 The final video should be at around 3 minutes long!
 Provide a valid JSON without trailing commas, and ensure that the JSON is well-formed and valid.
 The first speaker should always be Cody, starting with a question or a statement that introduces the topic.
 Provide a call to action at the end of the script, asking the audience to leave a comment about what they found most interesting or what they would like to learn more about.
-Always search in the web for the latest information about the topic to ensure it's accurate and up-to-date.
 Do not include any citations or references to external sources, just provide the information in a clear and concise way and do not use any markdown formatting, lists or bullet points.
 </attention>

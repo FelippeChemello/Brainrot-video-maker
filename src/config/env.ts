@@ -4,6 +4,8 @@ const envSchema = z.object({
     NODE_ENV: z.string().default('development'),
     
     GEMINI_API_KEY: z.string(),
+    GOOGLE_SERP_API_KEY: z.string(),
+    GOOGLE_SERP_ID: z.string(),
     
     AENEAS_BASE_URL: z.string(),
     AENEAS_API_KEY: z.string(),

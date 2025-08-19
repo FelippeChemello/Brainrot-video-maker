@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import fs from 'fs';
 import path from 'path';
 
@@ -12,10 +13,16 @@ import { Agent, LLMClient } from "./clients/interfaces/LLM";
 import { OpenAIClient } from "./clients/openai";
 import { AnthropicClient } from "./clients/anthropic";
 import { GeminiClient } from "./clients/gemini";
+import { Mermaid } from './clients/mermaid';
+import { MermaidRendererClient } from './clients/interfaces/MermaidRenderer';
+import { SearcherClient } from './clients/interfaces/Searcher';
+import { Google } from './clients/google';
 
 const openai: LLMClient & ImageGeneratorClient = new OpenAIClient();
 const anthropic: LLMClient = new AnthropicClient();
 const gemini: LLMClient & ImageGeneratorClient = new GeminiClient();
+const mermaid: MermaidRendererClient = new Mermaid();
+const google: SearcherClient = new Google();
 const scriptManagerClient: ScriptManagerClient = new NotionClient();
 
 const topic = process.argv[2]
@@ -54,25 +61,48 @@ ${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
     let minuteStartTime = Date.now();
 
     for (const [index, segment] of script.segments.entries()) {
-        if (segment.image_description) {
-            if (iterationsInMinute >= maxIterationsPerMinute) {
-                const currentTime = Date.now();
-                const elapsedTime = currentTime - minuteStartTime;
-                if (elapsedTime < 60000) {
-                    const waitTime = 60000 - elapsedTime;
+        if (segment.illustration) {
+            let mediaSrc: string | undefined;
 
-                    console.log(`Rate limit reached. Waiting for ${(waitTime / 1000).toFixed(1)} seconds...`);
-                    await sleep(waitTime);
-                }
-                iterationsInMinute = 0;
-                minuteStartTime = Date.now();
+            switch (segment.illustration.type) {
+                case 'mermaid': 
+                    console.log(`[${index + 1}/${script.segments.length}] Generating mermaid`)
+                    const { text: mermaidCode } = await openai.complete(Agent.MERMAID_GENERATOR, `Specification: ${segment.illustration.description} \n\nContext: ${segment.text}`);
+                    const exportedMermaid = await mermaid.exportMermaid(mermaidCode, index);
+
+                    mediaSrc = exportedMermaid.mediaSrc;
+                    break;
+
+                case 'image_generation': 
+                    if (iterationsInMinute >= maxIterationsPerMinute) {
+                        const currentTime = Date.now();
+                        const elapsedTime = currentTime - minuteStartTime;
+                        if (elapsedTime < 60000) {
+                            const waitTime = 60000 - elapsedTime;
+
+                            console.log(`Rate limit reached. Waiting for ${(waitTime / 1000).toFixed(1)} seconds...`);
+                            await sleep(waitTime);
+                        }
+                        iterationsInMinute = 0;
+                        minuteStartTime = Date.now();
+                    }
+
+                    console.log(`[${index + 1}/${script.segments.length}] Generating image`);
+                    const mediaGenerated = await gemini.generate(segment.illustration.description, index);
+                    
+                    mediaSrc = mediaGenerated.mediaSrc;
+                    iterationsInMinute++;
+                    break;
+
+                case 'query': 
+                default: 
+                    console.log(`[${index + 1}/${script.segments.length}] Searching for image`);
+
+                    const imageSearched = await google.searchImage(segment.illustration.description, index)
+                    mediaSrc = imageSearched.mediaSrc
             }
 
-            console.log(`[${index + 1}/${script.segments.length}] Generating image`);
-            const { mediaSrc } = await gemini.generate(segment.image_description, index);
-            
             script.segments[index].mediaSrc = mediaSrc;
-            iterationsInMinute++;
         }
     }
 

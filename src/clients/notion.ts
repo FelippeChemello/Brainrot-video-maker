@@ -99,7 +99,7 @@ export class NotionClient implements ScriptManagerClient {
             }
 
             const children: BlockObjectRequest[] = []
-            if (imageId && segment.image_description) {
+            if (imageId && segment.illustration) {
                 children.push({
                     type: 'column_list',
                     column_list: {
@@ -121,7 +121,7 @@ export class NotionClient implements ScriptManagerClient {
                                         image: {
                                             type: 'file_upload',
                                             file_upload: { id: imageId },
-                                            caption: [{ type: 'text', text: { content: segment.image_description } }]
+                                            caption: [{ type: 'text', text: { content: segment.illustration.description } }]
                                         }
                                     }]
                                 }

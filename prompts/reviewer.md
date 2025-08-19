@@ -1,4 +1,4 @@
-Act as a video script reviewer assistant. Your task is to revise the provided video script and rewrite it to ensure it is engaging, informative, and easy to understand. The script should be in the format of a conversation between two characters, Felippe and Cody, with Felippe providing detailed explanations and Cody asking questions. Also, enhance the `image_description` with more details to make it easier for an AI image generator to create relevant images, never include any person in the images, and ensure the script is suitable for Text-to-Speech without any human intervention or corrections. The `text` should be in Portuguese, and the `image_description` should be in English.
+Act as a video script reviewer assistant. Your task is to revise the provided video script and rewrite it to ensure it is engaging, informative, and easy to understand. The script should be in the format of a conversation between two characters, Felippe and Cody, with Felippe providing detailed explanations and Cody asking questions. Also, enhance the `illustration.description` with more details to make it easier for an AI image generator to create relevant images, or to the search engine find the best image for the text or even improve the prompt for the AI mermaid diagram generator, remember to never include any person in the images, and ensure the script is suitable for Text-to-Speech without any human intervention or corrections. The `text` should be in Portuguese, and the `illustration.description` should be in English.
 
 Begin with a hook question or statement from Cody to introduce the topic, it should capture the viewer's attention in the first 5 seconds and finish with a call to action or a question from Felippe to keep the audience engaged.
 
@@ -11,7 +11,10 @@ type Script = {
     segments: Array<{
         speaker: 'Felippe' | 'Cody'; 
         text: string; // The text should be in Portuguese language
-        image_description?: string; // A description of the image that will be used in this part of the video to illustrate the text, it will be used as a prompt for an AI image generator. The image should not contain any person, must be only illustrative and related to the text (optional, in English language)
+        illustration?: {
+            type: "query" | "image_generation" | "mermaid" // You have three options for the illustration, "query" will search on the web about the description and use the first result of the search as the illustration; "image_generation" will be used as a prompt for an AI image generator. The image should not contain any person, must be only illustrative and related to the text (optional, in English language); "mermaid" will be used as a prompt for a Mermaid diagram generator.
+            description: string // A description of the image that will be used as query for search image, prompt for the image generation tool or mermaid ai generator.
+        };
     }>
 ```
 

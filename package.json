@@ -31,6 +31,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.54.0",
     "@google/genai": "^1.9.0",
+    "@googleapis/customsearch": "^5.0.1",
+    "@mermaid-js/mermaid-cli": "^11.9.0",
     "@notionhq/client": "^3.1.1",
     "@remotion/bundler": "4.0.314",
     "@remotion/cli": "4.0.314",
@@ -63,6 +65,7 @@
     "onlyBuiltDependencies": [
       "@ffprobe-installer/linux-x64",
       "esbuild",
+      "puppeteer",
       "yt-dlp-exec"
     ]
   }
