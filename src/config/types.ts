@@ -97,7 +97,7 @@ export type Script = Array<{
     text: string;
     speaker: Speaker;
     illustration?: {
-      type: 'query' | 'image_generation' | 'mermaid'
+      type: 'query' | 'image_generation' | 'mermaid' | 'code'
       description: string
     }
 } & {

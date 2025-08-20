@@ -12,8 +12,8 @@ type Script = {
         speaker: 'Felippe' | 'Cody'; 
         text: string; // The text should be in Portuguese language
         illustration?: {
-            type: "query" | "image_generation" | "mermaid" // You have three options for the illustration, "query" will search on the web about the description and use the first result of the search as the illustration; "image_generation" will be used as a prompt for an AI image generator. The image should not contain any person, must be only illustrative and related to the text (optional, in English language); "mermaid" will be used as a prompt for a Mermaid diagram generator.
-            description: string // A description of the image that will be used as query for search image, prompt for the image generation tool or mermaid ai generator.
+            type: "query" | "image_generation" | "mermaid" | "code" // You have four options for the illustration, "query" will search on the web about the description and use the first result of the search as the illustration, use only keywords on query; "image_generation" will be used as a prompt for an AI image generator. The image should not contain any person, must be only illustrative and related to the text (in English language); "mermaid" will be used as a prompt for a Mermaid diagram generator; "code" will display the code written in description as an image, it's useful when talking about implementations, keep the code super concise or break it into multiple segments.
+            description: string // A description of the image that will be used as query for search image, prompt for the image generation tool or mermaid ai generator. Or Code written in markdown (with ```<lang> on first and last lines) that should be displayed to the audience.
         };
     }>
 ```

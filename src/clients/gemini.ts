@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-non-null-asserted-optional-chain */
 import fs from 'fs'
 import { GoogleGenAI } from '@google/genai'
-import terminalImage from 'terminal-image';
 
 import { ImageGeneratorClient } from './interfaces/ImageGenerator';
 import { ENV } from '../config/env';
@@ -108,7 +107,6 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient, LLMClient 
                     console.log(`[GEMINI] Image generated successfully: ${mimeType}`);
 
                     const imageBuffer = Buffer.from(base64Data, 'base64')
-                    console.log(await terminalImage.buffer(imageBuffer))
 
                     const filename = `image-${id}.png`
                     const filePath = `${publicDir}/${filename}`
@@ -161,7 +159,6 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient, LLMClient 
                 console.log(`[GEMINI] Thumbnail generated successfully: ${mimeType}`);
 
                 const imageBuffer = Buffer.from(base64Data, 'base64')
-                console.log(await terminalImage.buffer(imageBuffer))
 
                 const filename = `${titleToFileName(videoTitle)}-Thumbnail.png`;
                 const imagePath = path.join(outputDir, filename);

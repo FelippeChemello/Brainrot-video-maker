@@ -54,7 +54,8 @@ export class NotionClient implements ScriptManagerClient {
                 },
                 Composition: {
                     multi_select: [
-                        { name: 'Portrait' }
+                        { name: 'Portrait' },
+                        { name: 'Landscape' }
                     ]
                 },
                 Audio: {

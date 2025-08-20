@@ -29,7 +29,7 @@ export const Agents: {
         model: {
             [ModelProvider.OPENAI]: 'gpt-5',
             [ModelProvider.ANTHROPIC]: 'claude-sonnet-4-0',
-            [ModelProvider.GEMINI]: 'gemini-2.5-pro',
+            [ModelProvider.GEMINI]: 'gemini-2.5-flash',
         },
         responseParser: (response: string) => response.trim(),
     },

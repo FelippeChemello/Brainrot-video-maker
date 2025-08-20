@@ -17,11 +17,14 @@ import { Mermaid } from './clients/mermaid';
 import { MermaidRendererClient } from './clients/interfaces/MermaidRenderer';
 import { SearcherClient } from './clients/interfaces/Searcher';
 import { Google } from './clients/google';
+import { CodeRendererClient } from './clients/interfaces/CodeRenderer';
+import { Shiki } from './clients/shiki';
 
 const openai: LLMClient & ImageGeneratorClient = new OpenAIClient();
 const anthropic: LLMClient = new AnthropicClient();
 const gemini: LLMClient & ImageGeneratorClient = new GeminiClient();
 const mermaid: MermaidRendererClient = new Mermaid();
+const shiki: CodeRendererClient = new Shiki();
 const google: SearcherClient = new Google();
 const scriptManagerClient: ScriptManagerClient = new NotionClient();
 
@@ -67,13 +70,31 @@ ${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
             switch (segment.illustration.type) {
                 case 'mermaid': 
                     console.log(`[${index + 1}/${script.segments.length}] Generating mermaid`)
+
                     const { text: mermaidCode } = await openai.complete(Agent.MERMAID_GENERATOR, `Specification: ${segment.illustration.description} \n\nContext: ${segment.text}`);
                     const exportedMermaid = await mermaid.exportMermaid(mermaidCode, index);
 
                     mediaSrc = exportedMermaid.mediaSrc;
                     break;
 
+                case 'query': 
+                    console.log(`[${index + 1}/${script.segments.length}] Searching for image`);
+
+                    const imageSearched = await google.searchImage(segment.illustration.description, index)
+                    
+                    mediaSrc = imageSearched.mediaSrc
+                    break;
+
+                case 'code': 
+                    console.log(`[${index + 1}/${script.segments.length}] Generating code`)
+
+                    const codeGenerated = await shiki.exportCode(segment.illustration.description, index);
+                    
+                    mediaSrc = codeGenerated.mediaSrc;
+                    break;
+
                 case 'image_generation': 
+                default: 
                     if (iterationsInMinute >= maxIterationsPerMinute) {
                         const currentTime = Date.now();
                         const elapsedTime = currentTime - minuteStartTime;
@@ -93,13 +114,6 @@ ${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
                     mediaSrc = mediaGenerated.mediaSrc;
                     iterationsInMinute++;
                     break;
-
-                case 'query': 
-                default: 
-                    console.log(`[${index + 1}/${script.segments.length}] Searching for image`);
-
-                    const imageSearched = await google.searchImage(segment.illustration.description, index)
-                    mediaSrc = imageSearched.mediaSrc
             }
 
             script.segments[index].mediaSrc = mediaSrc;

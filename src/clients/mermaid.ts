@@ -9,7 +9,7 @@ export class Mermaid implements MermaidRendererClient {
     async exportMermaid(mermaidCode: string, id?: string | number): Promise<{ mediaSrc?: string; }> {
         console.log(`[MERMAID] Exporting mermaid to SVG`)
 
-        const filename = `mermaid-${id ?? v4()}`
+        const filename = `mermaid-${typeof id === 'undefined' ? v4() : id}`
         const inputFile = path.resolve(publicDir, `${filename}.mmd`)
         fs.writeFileSync(inputFile, mermaidCode, 'utf-8')
         
