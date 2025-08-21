@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { continueRender, delayRender, Img } from "remotion";
 
 function containRect(
@@ -53,7 +53,7 @@ function syncBgToImageBox(
 export const ImageWithBackground: React.FC<{ src: string }> = ({ src }) => {
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const bgRef = useRef<HTMLDivElement | null>(null);
-    const delayedRender = delayRender('image-with-background')
+    const [delayedRender] = useState(() => delayRender('image-with-background'))
 
     return (
         <div
