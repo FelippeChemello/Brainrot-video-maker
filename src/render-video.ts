@@ -27,8 +27,12 @@ const editor: MediaEditorClient = new FFmpegClient();
 const scripts = await scriptManager.retrieveScript(ScriptStatus.NOT_STARTED);
 
 for (const script of scripts) {
+    console.log(`Downloading assets for script ${script.title}...`);
     await scriptManager.downloadAssets(script);
-}   
+}
+
+const rendererBundle = await renderer.getBundle();
+console.log(`Renderer bundle created at: ${rendererBundle}`);
 
 for (const script of scripts) {
     if (!script.id) {
@@ -92,8 +96,8 @@ for (const script of scripts) {
         const videos: string[] = []
         for (const composition of script.compositions) {
             console.log(`Rendering ${composition} for script ${script.title}...`);
-            const videoPath = await renderer.renderVideo(script, composition);
-            
+            const videoPath = await renderer.renderVideo(script, composition, rendererBundle);
+
             console.log(`Rendered video for composition ${composition} at path: ${videoPath}`);
             videos.push(videoPath);
 
@@ -139,7 +143,7 @@ for (const script of scripts) {
         }
     } catch (error) {
         console.error(`Error processing script ${script.title}:`, error);
-        
+
         await scriptManager.updateScriptStatus(script.id, ScriptStatus.ERROR);
         
         const audioFilePath = path.join(publicDir, script.audioSrc);
@@ -163,3 +167,5 @@ for (const script of scripts) {
     }
 }
 
+fs.rmSync(rendererBundle, { recursive: true, force: true })
+console.log('All scripts processed.');

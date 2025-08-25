@@ -13,12 +13,21 @@ const timeout = 2 * 60 * 1000; // 2 minutes in milliseconds
 const port = 9999; // Port for Remotion server
 
 export class RemotionClient implements VideoRendererClient {
-    async renderVideo(script: ScriptWithTitle, compositionName: string): Promise<string> {
-        console.log(`[REMOTION] Bundling video for script "${script.title}" with composition "${compositionName}"...`);
+    async getBundle(): Promise<string> {
+        console.log('[REMOTION] Bundling video renderer...');
+        
         const bundle = await bundler({
             entryPoint: path.resolve(videoDir, 'index.ts'),
             webpackOverride: enableTailwind,
         })
+
+        return bundle;
+    }
+
+    async renderVideo(script: ScriptWithTitle, compositionName: string, bundle?: string): Promise<string> {
+        if (!bundle) {
+            bundle = await this.getBundle();
+        }
 
         console.log(`[REMOTION] Getting composition "${compositionName}" from bundle...`);
         const composition = await selectComposition({
