@@ -28,6 +28,8 @@ const shiki: CodeRendererClient = new Shiki();
 const google: SearcherClient = new Google();
 const scriptManagerClient: ScriptManagerClient = new NotionClient();
 
+const ENABLED_FORMATS: Array<'Portrait' | 'Landscape'> = ['Portrait', 'Landscape'];
+
 const topic = process.argv[2]
 if (!topic) {
     console.error("Please provide a topic as the first argument.");
@@ -124,9 +126,17 @@ ${script.segments.map((s) => `${s.speaker}: ${s.text}`).join('\n')}
     const { text: seoText } = await openai.complete(Agent.SEO_WRITER, review)
     const seo = JSON.parse(seoText);
 
-    const { mediaSrc: thumbnailSrc } = await openai.generateThumbnail(script.title, seo.description)
+    const thumbnails = [];
+    for (const format of ENABLED_FORMATS) {
+        console.log(`Generating ${format} thumbnail...`);
+        const { mediaSrc: thumbnailSrc } = await openai.generateThumbnail(script.title, seo.description, format)
 
-    await scriptManagerClient.saveScript(script, seo, thumbnailSrc)
+        if (thumbnailSrc) {
+            thumbnails.push(thumbnailSrc);
+        }
+    }
+
+    await scriptManagerClient.saveScript(script, seo, thumbnails, ENABLED_FORMATS)
 
     console.log(`Cleaning up assets...`)
     for (const segment of script.segments) {

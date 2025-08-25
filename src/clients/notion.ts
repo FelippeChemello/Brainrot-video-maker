@@ -24,7 +24,7 @@ const client = new Client({
 })
 
 export class NotionClient implements ScriptManagerClient {
-    async saveScript(script: ScriptWithTitle, seo: SEO, thumbnailFilename?: string): Promise<void> {
+    async saveScript(script: ScriptWithTitle, seo: SEO, thumbnailFilenames?: Array<string>, formats?: Array<'Portrait' | 'Landscape'>): Promise<void> {
         console.log(`[NOTION] Saving script ${script.title}`);
 
         let audioFileId: string | null = null;
@@ -34,11 +34,16 @@ export class NotionClient implements ScriptManagerClient {
             audioFileId = await this.uploadFile(path.join(publicDir, script.audioSrc));
         }
 
-        let thumbnailFileId: string | null = null;
-        if (thumbnailFilename) {
-            console.log(`[NOTION] Uploading thumbnail: ${thumbnailFilename}`);
+        const thumbnailFileIds: Array<string> = [];
+        if (thumbnailFilenames?.length) {
+            for (const thumbnailFilename of thumbnailFilenames) {
+                console.log(`[NOTION] Uploading thumbnail: ${thumbnailFilename}`);
 
-            thumbnailFileId = await this.uploadFile(path.join(outputDir, thumbnailFilename));
+                const thumbnailFileId = await this.uploadFile(path.join(outputDir, thumbnailFilename));
+                if (thumbnailFileId) {
+                    thumbnailFileIds.push(thumbnailFileId);
+                }
+            }
         }
 
         const page = await client.pages.create({
@@ -53,10 +58,7 @@ export class NotionClient implements ScriptManagerClient {
                     status: { name: ScriptStatus.NOT_READY },
                 },
                 Composition: {
-                    multi_select: [
-                        { name: 'Portrait' },
-                        { name: 'Landscape' }
-                    ]
+                    multi_select: formats ? formats.map((format) => ({ name: format })) : []
                 },
                 Audio: {
                     files: audioFileId ? [{
@@ -68,10 +70,7 @@ export class NotionClient implements ScriptManagerClient {
                     rich_text: [{ type: 'text', text: { content: `${seo.title}\n\n${seo.description}\n\n${seo.hashtags.join(" ")}` } }],
                 },
                 Output: { 
-                    files: thumbnailFileId ? [{
-                        type: 'file_upload',
-                        file_upload: { id: thumbnailFileId },
-                    }] : [],
+                    files: thumbnailFileIds.map((fileId) => ({ type: 'file_upload', file_upload: { id: fileId } }))
                 } 
             }
         })

@@ -125,7 +125,7 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient, LLMClient 
         }
     }
 
-    async generateThumbnail(videoTitle: string, description: string): Promise<{ mediaSrc?: string; }> {
+    async generateThumbnail(videoTitle: string, description: string, orientation: 'Portrait' | 'Landscape'): Promise<{ mediaSrc?: string; }> {
         let mediaSrc: string | undefined
 
         console.log(`[GEMINI] Generating thumbnail for script: ${videoTitle}`);
@@ -135,7 +135,7 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient, LLMClient 
         const imageResult = await genAI.models.generateContent({
             model: 'gemini-2.0-flash-exp-image-generation',
             contents: [
-                { text: 'You are a thumbnail generator AI. Your task is to create a thumbnail for a TikTok video based on the provided details. Always generate a thumbnail with a 9:16 aspect ratio, suitable for TikTok. The thumbnail should be visually appealing and relevant to the content of the video. The text should be concise and engaging, ideally no more than 5 words in PORTUGUESE. The thumbnail should include Felippe acting some action related to the video topic.' },
+                { text: `You are a thumbnail generator AI. Your task is to create a thumbnail for a ${orientation === 'Portrait' ? 'TikTok' : 'Youtube'} video based on the provided details. Always generate a thumbnail with a ${orientation === 'Portrait' ? '9:16' : '16:9'} aspect ratio, suitable for ${orientation === 'Portrait' ? 'TikTok' : 'Youtube'}. The thumbnail should be visually appealing and relevant to the content of the video. The text should be concise and engaging, ideally no more than 5 words in PORTUGUESE. The thumbnail should include Felippe acting some action related to the video topic. Include margins and avoid cutting off parts of the image.` },
                 { text: `Video Title: ${videoTitle} \n\n ${description}` },
                 { inlineData: { mimeType: 'image/png', data: felippeImg } }
             ],
@@ -160,7 +160,7 @@ export class GeminiClient implements ImageGeneratorClient, TTSClient, LLMClient 
 
                 const imageBuffer = Buffer.from(base64Data, 'base64')
 
-                const filename = `${titleToFileName(videoTitle)}-Thumbnail.png`;
+                const filename = `${titleToFileName(videoTitle)}-Thumbnail-${orientation}.png`;
                 const imagePath = path.join(outputDir, filename);
                 if (imageBuffer) {
                     fs.writeFileSync(imagePath, imageBuffer);

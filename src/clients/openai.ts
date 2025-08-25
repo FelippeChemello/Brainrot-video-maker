@@ -109,16 +109,20 @@ export class OpenAIClient implements TTSClient, ImageGeneratorClient, LLMClient 
         return { mediaSrc }
     }
 
-    async generateThumbnail(videoTitle: string, videoDescription: string): Promise<{ mediaSrc?: string }> {
+    async generateThumbnail(
+        videoTitle: string, 
+        videoDescription: string, 
+        orientation: 'Portrait' | 'Landscape'
+    ): Promise<{ mediaSrc?: string; }> {
         console.log(`[OPENAI] Generating thumbnail for script: ${videoTitle}`);
         
-        const felippeFileId = process.env.OPENAI_FELIPPE_FILE_ID;
+        const felippeFileId = ENV.OPENAI_FELIPPE_FILE_ID;
 
         const response = await openai.responses.create({
             model: 'gpt-4.1',
             input: [{
                 role: 'system',
-                content: "You are a thumbnail generator AI. Your task is to create a thumbnail for a TikTok video based on the provided details. Always generate a thumbnail with a 9:16 aspect ratio, suitable for TikTok. The thumbnail should be visually appealing and relevant to the content of the video. The text should be concise and engaging, ideally no more than 5 words in PORTUGUESE. The thumbnail should include Felippe acting some action related to the video topic."
+                content: `You are a thumbnail generator AI. Your task is to create a thumbnail for a ${orientation === 'Portrait' ? 'TikTok' : 'Youtube'} video based on the provided details. Always generate a thumbnail with a ${orientation === 'Portrait' ? '9:16' : '16:9'} aspect ratio, suitable for ${orientation === 'Portrait' ? 'TikTok' : 'Youtube'}. The thumbnail should be visually appealing and relevant to the content of the video. The text should be concise and engaging, ideally no more than 5 words in PORTUGUESE. The thumbnail should include Felippe acting some action related to the video topic. Include margins and avoid cutting off parts of the image.`
             }, {
                 role: 'user',
                 content: [
@@ -143,7 +147,7 @@ export class OpenAIClient implements TTSClient, ImageGeneratorClient, LLMClient 
 
         let mediaSrc: string | undefined
 
-        const filename = `${titleToFileName(videoTitle)}-Thumbnail.png`;
+        const filename = `${titleToFileName(videoTitle)}-Thumbnail-${orientation}.png`;
         const imagePath = path.join(outputDir, filename);
         if (imageData) {
             fs.writeFileSync(imagePath, Buffer.from(imageData.result!, 'base64'));
