@@ -10,7 +10,7 @@ import { AudioAlignerClient } from './clients/interfaces/AudioAligner';
 import { MFAClient } from './clients/mfa';
 import { VideoRendererClient } from './clients/interfaces/VideoRenderer';
 import { RemotionClient } from './clients/remotion';
-import { MediaEditorClient } from './clients/interfaces/VideoManipulator';
+import { VideoEditorClient } from './clients/interfaces/VideoEditor';
 import { FFmpegClient } from './clients/ffmpeg';
 import { AeneasClient } from './clients/aeneas';
 import { VisemeAlignerClient } from './clients/interfaces/VisemeAligner';
@@ -22,7 +22,7 @@ const scriptManager: ScriptManagerClient = new NotionClient()
 const audioAligner: AudioAlignerClient = new AeneasClient();
 const visemeAligner: VisemeAlignerClient = new MFAClient();
 const renderer: VideoRendererClient = new RemotionClient();
-const editor: MediaEditorClient = new FFmpegClient();
+const editor: VideoEditorClient = new FFmpegClient();
 
 const scripts = await scriptManager.retrieveScript(ScriptStatus.NOT_STARTED);
 

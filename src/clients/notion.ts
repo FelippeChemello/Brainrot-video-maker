@@ -338,7 +338,7 @@ export class NotionClient implements ScriptManagerClient {
         return script;
     }
 
-    async downloadOutputOfDoneScripts(): Promise<void> {
+    async downloadOutputOfDoneScripts(): Promise<Array<string>> {
         console.log('[NOTION] Downloading outputs');
 
         const response = await client.databases.query({
@@ -353,6 +353,7 @@ export class NotionClient implements ScriptManagerClient {
 
         console.log(`[NOTION] Found ${response.results.length} scripts with output available to download`);
 
+        const filesDownloaded: Array<string> = [];
         for (const page of response.results as unknown as Array<NotionMainDatabasePage>) {
             const title = page.properties.Name.title[0].text.content;
             const outputFiles = page.properties.Output.files;
@@ -367,13 +368,19 @@ export class NotionClient implements ScriptManagerClient {
 
                 const response = await fetch(fileUrl);
                 const buffer = await response.arrayBuffer();
-                fs.writeFileSync(path.join(outputDir, fileName), Buffer.from(buffer));
+                
+                const filePath = path.join(outputDir, fileName);
+                fs.writeFileSync(filePath, Buffer.from(buffer));
+
+                filesDownloaded.push(filePath);
 
                 console.log(`[NOTION] Saved file: ${fileName}`);
             }
         }
 
         console.log('[NOTION] Finished downloading all outputs');
+
+        return filesDownloaded;
     }
 
     async saveOutput(scriptId: string, output: Array<string>): Promise<void> {

@@ -55,6 +55,7 @@
     "react-dom": "^19.1.0",
     "remotion": "4.0.314",
     "sentence-splitter": "^5.0.0",
+    "sharp": "^0.34.3",
     "shiki": "^3.10.0",
     "split-file": "^2.3.0",
     "tailwindcss": "^4.1.7",
@@ -68,6 +69,7 @@
       "@ffprobe-installer/linux-x64",
       "esbuild",
       "puppeteer",
+      "sharp",
       "yt-dlp-exec"
     ]
   }

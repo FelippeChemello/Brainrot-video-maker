@@ -6,6 +6,6 @@ export interface ScriptManagerClient {
     updateScriptStatus(scriptId: string, status: ScriptStatus): Promise<void>;
     retrieveAssets(scriptId: string): Promise<{ background: VideoBackground }>;
     downloadAssets(script: ScriptWithTitle): Promise<ScriptWithTitle>;
-    downloadOutputOfDoneScripts(): Promise<void>;
+    downloadOutputOfDoneScripts(): Promise<Array<string>>;
     saveOutput(scriptId: string, output: Array<string>): Promise<void>;
 }
