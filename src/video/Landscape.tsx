@@ -5,7 +5,6 @@ import {
   staticFile,
   Sequence,
   useVideoConfig,
-  OffthreadVideo,
   useCurrentFrame,
   random,
 } from "remotion";
@@ -21,6 +20,7 @@ import { Felippe } from "./Felippe";
 import { getMimetypeFromFilename } from "../utils/get-mimetype-from-filename";
 import { LoopableOffthreadVideo } from "./LoopableOffthreadVideo";
 import { ImageWithBackground } from "./ImageWithBackground";
+import { WrinkledPaper } from "./WrinkledPaper";
 
 const { fontFamily } = loadFont();
 
@@ -47,14 +47,7 @@ export const Landscape: React.FC<z.infer<typeof videoSchema>> = ({ segments, bac
 
   return (
     <AbsoluteFill style={{ fontFamily }}>
-      {background.video && (
-        <OffthreadVideo
-          src={staticFile(background.video.src)} 
-          muted 
-          startFrom={(background.video.initTime || 0) * fps}
-          className="absolute top-0 left-0 w-full h-full object-cover"
-        />
-      )}
+      <WrinkledPaper />
 
       <Audio src={staticFile(audioSrc)} />
 
