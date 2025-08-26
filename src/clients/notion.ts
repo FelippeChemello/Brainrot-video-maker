@@ -147,7 +147,7 @@ export class NotionClient implements ScriptManagerClient {
         }
     }
 
-    async retrieveScript(status: ScriptStatus): Promise<Array<ScriptWithTitle>> {
+    async retrieveScript(status: ScriptStatus, limit?: number): Promise<Array<ScriptWithTitle>> {
         console.log(`[NOTION] Retrieving script with status: ${status}`);
 
         const response = await client.databases.query({
@@ -158,6 +158,7 @@ export class NotionClient implements ScriptManagerClient {
                     equals: status,
                 },
             },
+            page_size: limit && limit > 0 && limit <= 100 ? limit : 100,
         })
 
         console.log(`[NOTION] Found ${response.results.length} scripts`);
@@ -335,6 +336,44 @@ export class NotionClient implements ScriptManagerClient {
         }
 
         return script;
+    }
+
+    async downloadOutputOfDoneScripts(): Promise<void> {
+        console.log('[NOTION] Downloading outputs');
+
+        const response = await client.databases.query({
+            database_id: ENV.NOTION_DATABASE_ID,
+            filter: {
+                property: 'Status',
+                status: {
+                    equals: ScriptStatus.DONE,
+                },
+            },
+        })
+
+        console.log(`[NOTION] Found ${response.results.length} scripts with output available to download`);
+
+        for (const page of response.results as unknown as Array<NotionMainDatabasePage>) {
+            const title = page.properties.Name.title[0].text.content;
+            const outputFiles = page.properties.Output.files;
+
+            console.log(`[NOTION] Downloading output for script: ${title}`);
+
+            for (const file of outputFiles) {
+                const fileUrl = file.file.url;
+                const fileName = file.name;
+
+                console.log(`[NOTION] Downloading file: ${fileName}`);
+
+                const response = await fetch(fileUrl);
+                const buffer = await response.arrayBuffer();
+                fs.writeFileSync(path.join(outputDir, fileName), Buffer.from(buffer));
+
+                console.log(`[NOTION] Saved file: ${fileName}`);
+            }
+        }
+
+        console.log('[NOTION] Finished downloading all outputs');
     }
 
     async saveOutput(scriptId: string, output: Array<string>): Promise<void> {
