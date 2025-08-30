@@ -28,7 +28,7 @@ const shiki: CodeRendererClient = new Shiki();
 const google: SearcherClient = new Google();
 const scriptManagerClient: ScriptManagerClient = new NotionClient();
 
-const ENABLED_FORMATS: Array<'Portrait' | 'Landscape'> = ['Portrait', 'Landscape'];
+const ENABLED_FORMATS: Array<'Portrait' | 'Landscape'> = ['Portrait'];
 
 const topic = process.argv[2]
 if (!topic) {

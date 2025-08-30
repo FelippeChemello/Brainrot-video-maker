@@ -31,6 +31,8 @@ export class Google implements SearcherClient {
 
     const extension = data.items[0].fileFormat?.split('/').pop() || 'png'
 
+    console.log(`[GOOGLE] Found image: ${data.items[0].link} with format ${extension}`);
+
     const filename = `image-${typeof id === 'undefined' ? v4() : id}.${extension}`;
     const file = await fetch(data.items[0].link)
     const buffer = await file.arrayBuffer()
