@@ -21,6 +21,7 @@ import Text from "./Text";
 import { getMimetypeFromFilename } from "../utils/get-mimetype-from-filename";
 import { LoopableOffthreadVideo } from "./LoopableOffthreadVideo";
 import { ImageWithBackground } from "./ImageWithBackground";
+import { WrinkledPaper } from "./WrinkledPaper";
 
 const { fontFamily } = loadFont();
 
@@ -47,14 +48,15 @@ export const Portrait: React.FC<z.infer<typeof videoSchema>> = ({ segments, back
 
   return (
     <AbsoluteFill style={{ backgroundColor: background.color, fontFamily }}>
-      {background.video && (
+      {background.video ? (
         <OffthreadVideo
           src={staticFile(background.video.src)} 
           muted 
           startFrom={(background.video.initTime || 0) * fps}
           className="absolute top-0 left-0 w-full h-full object-cover"
         />
-      )}
+      ) : <WrinkledPaper />}
+      
 
       <Audio src={staticFile(audioSrc)} />
 

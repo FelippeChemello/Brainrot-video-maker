@@ -272,26 +272,26 @@ export class NotionClient implements ScriptManagerClient {
     async retrieveAssets(pageId: string): Promise<{ background: VideoBackground }> {
         console.log(`[NOTION] Retrieving assets for page ${pageId}`);
 
-        const availableBackgroundVideos = fs.readdirSync(path.join(publicDir, 'assets'))
-            .filter(file => file.endsWith('.mp4'))
-            .map(file => ({
-                src: `assets/${file}`,
-                name: file.replace('.mp4', ''),
-            }));
+        // const availableBackgroundVideos = fs.readdirSync(path.join(publicDir, 'assets'))
+        //     .filter(file => file.endsWith('.mp4'))
+        //     .map(file => ({
+        //         src: `assets/${file}`,
+        //         name: file.replace('.mp4', ''),
+        //     }));
 
-        const randomBackgroundVideo = availableBackgroundVideos[Math.floor(Math.random() * availableBackgroundVideos.length)];
+        // const randomBackgroundVideo = availableBackgroundVideos[Math.floor(Math.random() * availableBackgroundVideos.length)];
 
         const background: VideoBackground = {
             color: "oklch(70.8% 0 0)",
             mainColor: "oklch(68.5% 0.169 237.323)",
             secondaryColor: "oklch(29.3% 0.066 243.157)",
             seed: v4(),
-            video: {
-                src: randomBackgroundVideo.src,
-            }
+            // video: {
+            //     src: randomBackgroundVideo.src,
+            // }
         }
 
-        console.log(`[NOTION] Selected background video: ${randomBackgroundVideo.name}`);
+        // console.log(`[NOTION] Selected background video: ${randomBackgroundVideo.name}`);
 
         return { background };
     }
