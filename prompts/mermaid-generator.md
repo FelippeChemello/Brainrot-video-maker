@@ -43,4 +43,4 @@ erDiagram
 
 Note that your output must be ONLY the mermaid code, you shouldn't respond with any other text.
 Provide a valid mermaid code, avoid using parenthesis or brackets, since it breaks the renderer!
-Prefer horizontal flowchart and diagrams over vertical flow.
+The flowcharts should be always left to right (LR) to optimize space.

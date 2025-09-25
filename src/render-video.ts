@@ -14,7 +14,9 @@ import { VideoEditorClient } from './clients/interfaces/VideoEditor';
 import { FFmpegClient } from './clients/ffmpeg';
 import { AeneasClient } from './clients/aeneas';
 import { VisemeAlignerClient } from './clients/interfaces/VisemeAligner';
+import { AudioEditorClient } from './clients/interfaces/AudioEditorClient';
 
+const SPEEDUP_AUDIO_FACTOR = 1.3;
 const MAX_DURATION_FOR_SHORT_CONVERSION = 350;
 const MAX_DURATION_OF_SHORT_VIDEO = 170;
 
@@ -22,13 +24,23 @@ const scriptManager: ScriptManagerClient = new NotionClient()
 const audioAligner: AudioAlignerClient = new AeneasClient();
 const visemeAligner: VisemeAlignerClient = new MFAClient();
 const renderer: VideoRendererClient = new RemotionClient();
-const editor: VideoEditorClient = new FFmpegClient();
+const editor: VideoEditorClient & AudioEditorClient = new FFmpegClient();
 
 const scripts = await scriptManager.retrieveScript(ScriptStatus.NOT_STARTED);
 
 for (const script of scripts) {
     console.log(`Downloading assets for script ${script.title}...`);
     await scriptManager.downloadAssets(script);
+
+    if (script.audioSrc) {
+        console.log(`Applying base speed up to audio for script ${script.title}...`);
+
+        const audioFilePath = path.join(publicDir, script.audioSrc);
+        const speededUpAudioPath = await editor.speedUpAudio(audioFilePath, SPEEDUP_AUDIO_FACTOR);
+        console.log(`Speeded up audio saved at: ${speededUpAudioPath}`);
+
+        script.audioSrc = path.basename(speededUpAudioPath);
+    }
 }
 
 const rendererBundle = await renderer.getBundle();
@@ -56,17 +68,8 @@ for (const script of scripts) {
         const assets = await scriptManager.retrieveAssets(script.id);
         script.background = assets.background;
 
-        const textWithoutHTMLTags = script.segments.map((segment) => {
-            return segment.text.replace(/<\/?[^>]+(>|$)/g, "");
-        }).join('\n');
-
         const audioFilePath = path.join(publicDir, script.audioSrc);
-        
-        if (!fs.existsSync(audioFilePath)) {
-            console.error(`Audio file not found: ${audioFilePath}`);
-            await scriptManager.updateScriptStatus(script.id, ScriptStatus.ERROR);
-            continue;
-        }
+        const fullText = script.segments.map((segment) => segment.text).join('\n');
 
         console.log(`Aligning audio for script ${script.title}...`);
         const audio = await audioAligner.alignAudio({
@@ -74,7 +77,7 @@ for (const script of scripts) {
                 filepath: audioFilePath,
                 mimeType: script.audioMimeType!
             },
-            text: textWithoutHTMLTags
+            text: fullText
         })
 
         script.alignment = audio.alignment;
@@ -85,7 +88,7 @@ for (const script of scripts) {
                 filepath: audioFilePath,
                 mimeType: script.audioMimeType!
             },
-            text: textWithoutHTMLTags
+            text: fullText
         });
 
         script.visemes = visemes;
